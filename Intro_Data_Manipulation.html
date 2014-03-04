@@ -1,0 +1,532 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#introduction-to-data-manipulation">Introduction to Data Manipulation</a><ul>
+<li><a href="#subsetting">Subsetting</a></li>
+<li><a href="#lets-look-at-some-examples">LETS LOOK AT SOME EXAMPLES</a></li>
+<li><a href="#logical-subsetting">Logical Subsetting</a></li>
+<li><a href="#common-subsetting-situations-and-some-useful-functions">Common Subsetting Situations and Some Useful Functions</a></li>
+<li><a href="#some-subsetting-practice-problems">Some Subsetting Practice Problems</a></li>
+<li><a href="#data-manipulation">Data Manipulation</a><ul>
+<li><a href="#renaming-columns">renaming columns</a></li>
+<li><a href="#reordering-rowscolumns">reordering rows/columns</a></li>
+<li><a href="#keys">Keys</a></li>
+<li><a href="#ordering-and-expand.grid">Ordering and expand.grid()</a></li>
+<li><a href="#additional-manipulations">Additional manipulations</a></li>
+</ul></li>
+<li><a href="#assignments">Assignments</a></li>
+<li><a href="#merging-data">Merging Data</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="introduction-to-data-manipulation">Introduction to Data Manipulation</h1>
+<p>You’ve made it through the theoretical aspects and you’re close to being ready to start getting your hands dirty. All of you have most likely used every single element of this module, but now we will reassess these operators and behaviors to get a deeper understanding - thus allowing us to wield them more effectively.</p>
+<h2 id="subsetting">Subsetting</h2>
+<p>The three subsetting (or subscripting) operators available in R are <code>[</code>, <code>[[</code>, and <code>$</code>. There are also some functions such as <code>subset</code>. Each has different behaviors and caveats attached that are important when deciding which to use for the intended task.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Subscript</th>
+<th align="right">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Positive Numeric Vector</td>
+<td align="right">selects items in those indices</td>
+</tr>
+<tr class="even">
+<td align="left">Negative Numeric Vector</td>
+<td align="right">selects all but those indices</td>
+</tr>
+<tr class="odd">
+<td align="left">Character Vector</td>
+<td align="right">selects items with those names</td>
+</tr>
+<tr class="even">
+<td align="left">Logical Vector</td>
+<td align="right">selects all TRUE (and NA) items</td>
+</tr>
+<tr class="odd">
+<td align="left">Missing</td>
+<td align="right">selects all missing</td>
+</tr>
+</tbody>
+</table>
+<p>You can easily see how each of these works given a simple vector</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="ot">NA</span>, <span class="dv">8</span>, <span class="dv">10</span>)
+<span class="kw">names</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>, <span class="st">&quot;e&quot;</span>)
+x[<span class="dv">1</span>]</code></pre>
+<pre><code>## a 
+## 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[-<span class="dv">1</span>]</code></pre>
+<pre><code>##  b  c  d  e 
+##  5 NA  8 10</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">3</span>)]</code></pre>
+<pre><code>##  a  b  c 
+##  1  5 NA</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[-<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">3</span>)]</code></pre>
+<pre><code>##  d  e 
+##  8 10</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[<span class="kw">is.na</span>(x)]</code></pre>
+<pre><code>##  c 
+## NA</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[!<span class="kw">is.na</span>(x)]</code></pre>
+<pre><code>##  a  b  d  e 
+##  1  5  8 10</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[<span class="st">&quot;b&quot;</span>]</code></pre>
+<pre><code>## b 
+## 5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">x[<span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)]</code></pre>
+<pre><code>##  b  c 
+##  5 NA</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># Logical subsetting returns values that you give as true</span>
+x[<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">FALSE</span>)]</code></pre>
+<pre><code>##  a  c 
+##  1 NA</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># but don&#39;t forget about the recycling rules!</span>
+x[<span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>)]</code></pre>
+<pre><code>##  a  c  e 
+##  1 NA 10</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># if you call a specific index more than once it will be returned more than</span>
+<span class="co"># once</span>
+x[<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)]</code></pre>
+<pre><code>## b b 
+## 5 5</code></pre>
+<p>By default, <code>[</code> will simplify the results to the lowest possible dimensionality. That is, it will reduce any higher dimensionality object to a list or vector. This is because if you select a subset, R will coerce the result to the appropriate dimensionality. We will give an example of this momentarily. To stop this behavior you can use the <code>drop = FALSE</code> option.</p>
+<p>For higher dimensionality objects, rows and columns are subset individually and can be combined in a single call</p>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph[<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>), <span class="kw">c</span>(<span class="st">&quot;Time&quot;</span>, <span class="st">&quot;conc&quot;</span>)]</code></pre>
+<pre><code>##     Time  conc
+## 1   0.00  0.74
+## 2   0.25  2.84
+## 3   0.57  6.57
+## 4   1.12 10.50
+## 5   2.02  9.66
+## 6   3.82  8.58
+## 7   5.10  8.36
+## 8   7.03  7.47
+## 9   9.05  6.89
+## 10 12.12  5.94</code></pre>
+<p><code>[[</code> and <code>$</code> allow us to take out components of the list.</p>
+<p>Likewise, given data frames are lists of column, <code>[[</code> can be used to extract a column from data frames.</p>
+<p><code>[[</code> is similar to <code>[</code>, however, it only returns a single value. <code>$</code> is shorthand for <code>[[</code> but is only available for character subsetting</p>
+<p>There are two additional important distinctions between <code>$</code> and <code>[[</code></p>
+<ol style="list-style-type: decimal">
+<li>$ can not be used for column names stored as a variable:</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r">id &lt;-<span class="st"> &quot;Subject&quot;</span>
+Theoph$id</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph[[id]]</code></pre>
+<pre><code>##   [1] 1  1  1  1  1  1  1  1  1  1  1  2  2  2  2  2  2  2  2  2  2  2  3 
+##  [24] 3  3  3  3  3  3  3  3  3  3  4  4  4  4  4  4  4  4  4  4  4  5  5 
+##  [47] 5  5  5  5  5  5  5  5  5  6  6  6  6  6  6  6  6  6  6  6  7  7  7 
+##  [70] 7  7  7  7  7  7  7  7  8  8  8  8  8  8  8  8  8  8  8  9  9  9  9 
+##  [93] 9  9  9  9  9  9  9  10 10 10 10 10 10 10 10 10 10 10 11 11 11 11 11
+## [116] 11 11 11 11 11 11 12 12 12 12 12 12 12 12 12 12 12
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><code>$</code> allows for partial matching</li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;Subject&quot; &quot;Wt&quot;      &quot;Dose&quot;    &quot;Time&quot;    &quot;conc&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># $ allows for partial matching</span>
+<span class="kw">head</span>(Theoph$Sub)</code></pre>
+<pre><code>## [1] 1 1 1 1 1 1
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(Theoph$Subj)</code></pre>
+<pre><code>## [1] 1 1 1 1 1 1
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(Theoph$Subject)</code></pre>
+<pre><code>## [1] 1 1 1 1 1 1
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># &#39;[[&#39; does not</span>
+<span class="kw">head</span>(Theoph[[<span class="st">&quot;Subj&quot;</span>]])</code></pre>
+<pre><code>## NULL</code></pre>
+<p>Using <code>$</code> can lead to unintended consequences if you’re looking to grab a column of a certain name that isn’t there but a partial match is - especially if this is nested in a function where it isn’t clear immediately</p>
+<p><code>[</code> and <code>[[</code> are both useful for different tasks. In a general sense you use them to accomplish the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Simplifying</th>
+<th align="left">Preserving</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Vector</td>
+<td align="left"><code>x[[1]]</code></td>
+<td align="left"><code>x[1]</code></td>
+</tr>
+<tr class="even">
+<td align="left">List</td>
+<td align="left"><code>x[[1]]</code></td>
+<td align="left"><code>x[1]</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Factor</td>
+<td align="left"><code>x[1:4, drop = T]</code></td>
+<td align="left"><code>x[1:4]</code></td>
+</tr>
+<tr class="even">
+<td align="left">Array</td>
+<td align="left"><code>x[1, ]</code>, <code>x[, 1]</code></td>
+<td align="left"><code>x[1, , drop = F]</code>, <code>x[, 1, drop = F]</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Data frame</td>
+<td align="left"><code>x[, 1]</code>, <code>x[[1]]</code></td>
+<td align="left"><code>x[, 1, drop = F]</code>, <code>x[1]</code></td>
+</tr>
+</tbody>
+</table>
+<p>There are benefits for each - simplying is often beneficial when you are looking for a result. Preserving is often beneficial in the programming context when you want to keep the results and structure the same.</p>
+<p>An easy way to think about it:</p>
+<blockquote>
+<p>“If list <code>x</code> is a train carrying objects, then <code>x[[5]]</code> is the object in car 5; <code>x[4:6]</code> is a train of cars 4-6.” — <span class="citation">[@RLangTip]</span>(http://twitter.com/#!/RLangTip/status/118339256388304896)</p>
+</blockquote>
+<p>One thing to note: S3 and S4 objects can override the standard behavior of <code>[</code> and <code>[[</code> so they behave differently for different types of objects. This can be useful for controlling simplification vs preservation behavior.</p>
+<h2 id="lets-look-at-some-examples">LETS LOOK AT SOME EXAMPLES</h2>
+<ul>
+<li>create a vector, list, and dataframe.</li>
+<li>Extract elements using [, [[, and $</li>
+<li>What are the type and attributes that remain for the extracted piece of information</li>
+<li>Quickly brainstorm a couple situations that these could be important to remember for more complex tasks</li>
+</ul>
+<h2 id="logical-subsetting">Logical Subsetting</h2>
+<p>One of the most common ways to subset rows is to use <strong>logical subsetting</strong>.</p>
+<p>Let’s take a look</p>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph[Theoph$Subject ==<span class="st"> </span><span class="dv">1</span>, ]</code></pre>
+<pre><code>##    Subject   Wt Dose  Time  conc
+## 1        1 79.6 4.02  0.00  0.74
+## 2        1 79.6 4.02  0.25  2.84
+## 3        1 79.6 4.02  0.57  6.57
+## 4        1 79.6 4.02  1.12 10.50
+## 5        1 79.6 4.02  2.02  9.66
+## 6        1 79.6 4.02  3.82  8.58
+## 7        1 79.6 4.02  5.10  8.36
+## 8        1 79.6 4.02  7.03  7.47
+## 9        1 79.6 4.02  9.05  6.89
+## 10       1 79.6 4.02 12.12  5.94
+## 11       1 79.6 4.02 24.37  3.28</code></pre>
+<p>We just subset the Theoph dataframe to only give us back the rows in which Subject equals 1. How does R go about doing this? Logical subsetting!</p>
+<p>Notice what we get when we simply ask for <code>Theoph$Subject == 1</code></p>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph$Subject ==<span class="st"> </span><span class="dv">1</span></code></pre>
+<pre><code>##   [1]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [34] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [45] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [67] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [100] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [111] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [122] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<p>It doesn’t give us back the values for the rows where subject equals one, rather, it gives us back a vector of <code>TRUE</code> or <code>FALSE</code> values.</p>
+<p>So, in reality, we are using the logical subsetting rules to extract the rows of the dataframe that come back <code>TRUE</code> from our logical query.</p>
+<p>We can do this ‘by hand’ to show whats going on</p>
+<pre class="sourceCode r"><code class="sourceCode r">subj &lt;-<span class="st"> </span><span class="kw">ifelse</span>(Theoph[[<span class="st">&quot;Subject&quot;</span>]] ==<span class="st"> </span><span class="dv">1</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)
+subj</code></pre>
+<pre><code>##   [1]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [12] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [23] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [34] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [45] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [56] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [67] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [78] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [89] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [100] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [111] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+## [122] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph[subj, ]</code></pre>
+<pre><code>##    Subject   Wt Dose  Time  conc
+## 1        1 79.6 4.02  0.00  0.74
+## 2        1 79.6 4.02  0.25  2.84
+## 3        1 79.6 4.02  0.57  6.57
+## 4        1 79.6 4.02  1.12 10.50
+## 5        1 79.6 4.02  2.02  9.66
+## 6        1 79.6 4.02  3.82  8.58
+## 7        1 79.6 4.02  5.10  8.36
+## 8        1 79.6 4.02  7.03  7.47
+## 9        1 79.6 4.02  9.05  6.89
+## 10       1 79.6 4.02 12.12  5.94
+## 11       1 79.6 4.02 24.37  3.28</code></pre>
+<p>Logical subsetting is at the core of many of R’s operations. Any time you’re matching, or checking with <code>is.*</code> you are using logical subsetting to test the condition you’re looking for then returning the <code>TRUE</code> results</p>
+<h2 id="common-subsetting-situations-and-some-useful-functions">Common Subsetting Situations and Some Useful Functions</h2>
+<p>Now that you’ve gotten your feet wet with the basics of subsetting, lets check-in with some of the commonly used operators that give us some enhanced subsetting functionality.</p>
+<p>Note: These all take advantage of logical subsetting:</p>
+<p>Take a moment to prod through to documentation for the other operations. Note for things operations like <code>%in%</code> or <code>&amp;</code> to query help you need to add a single quote around it like so <code>?'%in%'</code></p>
+<p>This is a good chance for us to take a deeper look @ both how these functions work and how to read the documentation</p>
+<p><strong>pause to look @ %in%, is.na, and which documentation</strong></p>
+<ul>
+<li><code>%in%</code></li>
+<li><code>is.na</code></li>
+<li><code>!</code></li>
+<li><code>duplicated</code></li>
+<li><code>unique</code></li>
+<li><code>&amp;</code></li>
+<li><code>|</code></li>
+<li><code>which</code></li>
+<li><code>any</code></li>
+</ul>
+<p>It can be useful to make yourself a brief ‘cheat sheet’ of some of the common operations you use to reference when you’re thinking about what you are trying to do what you want your output to be.</p>
+<p>For example:</p>
+<ul>
+<li><code>%in% - compares values from the input vector with a table vector and returns T/F.  * input/output are coerced to vectors and then type-matched before comparison. Factors, lists converted to character vectors! * Never returns NA, making it useful for</code>if` conditions
+<ul>
+<li>Can be slow for long lists and best avoided for complex cases</li>
+</ul></li>
+</ul>
+<p>There is an interesting nugget of information in the documentation - that the input is coerced to a vector then type-matched.</p>
+<p>So what is going on in these two situations?</p>
+<pre class="sourceCode r"><code class="sourceCode r">ISM &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)
+ISMnums &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+SUBJ &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)
+ISM %in%<span class="st"> </span>SUBJ</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(ISM %in%<span class="st"> </span>SUBJ)</code></pre>
+<pre><code>## [1] 1 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">ISMnums %in%<span class="st"> </span>SUBJ</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(ISMnums %in%<span class="st"> </span>SUBJ)</code></pre>
+<pre><code>## [1] 1 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+ISM &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)
+SUBJ &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))
+ISM %in%<span class="st"> </span>SUBJ</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(ISM %in%<span class="st"> </span>SUBJ)</code></pre>
+<pre><code>## integer(0)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">ISMnums %in%<span class="st"> </span>SUBJ</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">which</span>(ISMnums %in%<span class="st"> </span>SUBJ)</code></pre>
+<pre><code>## [1] 1 3</code></pre>
+<p>hint: look @ ID numbers</p>
+<p>The moral of the story, is make sure you know what is going on under the hood - sometimes you can get the ‘right’ answer for the wrong reasons.</p>
+<h2 id="some-subsetting-practice-problems">Some Subsetting Practice Problems</h2>
+<p>What’s wrong with this subsetting command? <code>dosingdf &lt;- df[unique(df$ID),]</code></p>
+<p>TODO: quick and easy give harder ones later</p>
+<h2 id="data-manipulation">Data Manipulation</h2>
+<p>Now that we can slice and dice our data how we want - let’s examine how we can actually manipulate the data</p>
+<p>Our goal for this section is to be able to: - rename columns systematically - reorder and rearrange rows and columns to our needs - create new columns</p>
+<h3 id="renaming-columns">renaming columns</h3>
+<p>Quick renaming of columns can be easily accomplished using the plyr <code>rename</code> command with the structure:</p>
+<p><code>dataframe &lt;- rename(dataframe, c(&quot;oldcolname1&quot; = &quot;newcolname1&quot;, ...))</code></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(plyr)
+<span class="kw">names</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;Subject&quot; &quot;Wt&quot;      &quot;Dose&quot;    &quot;Time&quot;    &quot;conc&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph &lt;-<span class="st"> </span><span class="kw">rename</span>(Theoph, <span class="kw">c</span>(<span class="dt">Subject =</span> <span class="st">&quot;ID&quot;</span>))
+<span class="kw">names</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;ID&quot;   &quot;Wt&quot;   &quot;Dose&quot; &quot;Time&quot; &quot;conc&quot;</code></pre>
+<p>This can also be done directly without plyr, however is a bit more verbose</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(Theoph)[<span class="kw">names</span>(Theoph) ==<span class="st"> &quot;Subject&quot;</span>] &lt;-<span class="st"> &quot;ID&quot;</span></code></pre>
+<p>Pause for a second - given what we’ve learned about subsetting - what is going on based on the way we’ve constructed the renaming.</p>
+<p>Answer: <code>names(Theoph)</code> creates a vector of names - the <code>names(Theoph) == &quot;Subject&quot;</code> logically subsets the vector to identify which index matches the query. <code>&lt;- &quot;ID&quot;</code> is to assign a new value to that index location(s).</p>
+<p>Column names can be directly accessed using the <code>colnames</code> function (or for dataframes or lists simply <code>names</code>), and you can rename them all directly by giving it a vector of names.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(Theoph) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;there&quot;</span>)
+<span class="kw">colnames</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;hello&quot; &quot;there&quot; NA      NA      NA</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(Theoph)</code></pre>
+<p>As you can see, this can be dangerous due to not giving the proper length vector (remember R’s recycling rule!), likewise, if the order of columns changes unexpectedly, your vector could rename columns incorrectly.</p>
+<p>There are a couple things directly accessing all the colnames can be useful for though.</p>
+<p>For example, capitalization of columns can often be inconsistent and frustrating. This can be quickly fixed by converting all columns to uppercase or lowercase using <code>toupper()</code> and <code>tolower()</code></p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;Subject&quot; &quot;Wt&quot;      &quot;Dose&quot;    &quot;Time&quot;    &quot;conc&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(Theoph) &lt;-<span class="st"> </span><span class="kw">toupper</span>(<span class="kw">names</span>(Theoph))
+<span class="kw">names</span>(Theoph)</code></pre>
+<pre><code>## [1] &quot;SUBJECT&quot; &quot;WT&quot;      &quot;DOSE&quot;    &quot;TIME&quot;    &quot;CONC&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(Theoph)</code></pre>
+<h3 id="reordering-rowscolumns">reordering rows/columns</h3>
+<p>When reordering columns in a dataframe you can actually think of it as creating a new dataframe in which the columns get created in the way you order them.</p>
+<pre class="sourceCode r"><code class="sourceCode r">newTheoph &lt;-<span class="st"> </span>Theoph[<span class="kw">c</span>(<span class="st">&quot;Subject&quot;</span>, <span class="st">&quot;Time&quot;</span>, <span class="st">&quot;conc&quot;</span>, <span class="st">&quot;Dose&quot;</span>, <span class="st">&quot;Wt&quot;</span>)]
+<span class="kw">head</span>(Theoph)</code></pre>
+<pre><code>##   Subject   Wt Dose Time  conc
+## 1       1 79.6 4.02 0.00  0.74
+## 2       1 79.6 4.02 0.25  2.84
+## 3       1 79.6 4.02 0.57  6.57
+## 4       1 79.6 4.02 1.12 10.50
+## 5       1 79.6 4.02 2.02  9.66
+## 6       1 79.6 4.02 3.82  8.58</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(newTheoph)</code></pre>
+<pre><code>##   Subject Time  conc Dose   Wt
+## 1       1 0.00  0.74 4.02 79.6
+## 2       1 0.25  2.84 4.02 79.6
+## 3       1 0.57  6.57 4.02 79.6
+## 4       1 1.12 10.50 4.02 79.6
+## 5       1 2.02  9.66 4.02 79.6
+## 6       1 3.82  8.58 4.02 79.6</code></pre>
+<p>Most of the time since you don’t want to create a new data frame every time you reorder, you can simply overwrite the old data frame. <code>Theoph &lt;- Theoph[c(&quot;Subject&quot;, &quot;Time&quot;, &quot;conc&quot;, &quot;Dose&quot;, &quot;Wt&quot;)]</code></p>
+<p>Just like all other subsetting we’ve gone over, we can also organize by index</p>
+<p><code>Theoph &lt;- Theoph[c(1, 4, 5, 3, 2)]</code></p>
+<p>I suggest against it unless you have good reason. (ie you know your code will always be a specific structure) Even then, while faster to type than named indices, it makes legibility more difficult, and modification down the line more tedious trying to keep track.</p>
+<h3 id="keys">Keys</h3>
+<p>Similar to columns, rows also have names. As you slice and dice and reorder a dataset it can get pretty ugly, so if the need arises, row names can be rest by <code>rownames(df) &lt;- NULL</code></p>
+<p>Rows can always be referred by their name. They are also structurally distinguishable by their content.</p>
+<p>A <strong>key</strong> is the set of columns that can uniquely distinguish every row. Different datasets can have keys of varying complexity (number of columns)</p>
+<p>A basic dosing dataset key may be as simple as ID, however for a cross-over clinical trial a dataset may be keyed on ID, time, and cohort.</p>
+<p>The general relationship between <strong>key columns</strong> and other columns is:</p>
+<blockquote>
+<p>Key columns should represent unique objects (persons, events) and the other columns should characterize these objects</p>
+</blockquote>
+<p>R does not explicitly recognize keys - it is up to you to keep track. Keys become increasingly important when delving into advanced data manipulation.</p>
+<h3 id="ordering-and-expand.grid">Ordering and expand.grid()</h3>
+<p>The concept of keys can help us think about the structure of the dataset when we deal with ordering.</p>
+<p>The <code>order</code> function in R allows us to easily sort data in ascending or descending order.</p>
+<p>If we wanted to sort a dataset by ID and Time we could do so via:</p>
+<p><code>df &lt;- df[order(df$ID, df$Time),]</code></p>
+<p>It is a good habit to sort raw data (especially if its eventually going into phoenix or nonmem)</p>
+<p>The way <code>order</code> works with multiple arguments is it sorts starting with the first argument, each time it runs into a ‘tie’ it looks for subsequent arguments for how to break the ‘tie’</p>
+<p>For example, if you have 5 time observations associated with an ID, if you do: <code>order(df$ID, df$TIME)</code> it will start sorting by <code>ID</code>, notice it has multiple results for the same ID value, it will then use <code>TIME</code> to continue the sort.</p>
+<p><code>order</code> is quite powerful with the <code>expand.grid</code> function.</p>
+<h3 id="additional-manipulations">Additional manipulations</h3>
+<p>To quickly note - columns and rows can be removed simply by calling their index and assigning it to NULL</p>
+<p><code>Theoph$Subject &lt;- NULL</code> or <code>Theoph[Theoph$Subject ==1,] &lt;- NULL</code></p>
+<p><code>with</code> - ‘opens up’ the input within the function to allow us access columns similar to <code>attach()</code> but only in the function’s temporary environment. Can be very useful for with modeling.</p>
+<pre class="sourceCode r"><code class="sourceCode r">## get better example
+<span class="kw">library</span>(MASS)
+<span class="kw">with</span>(anorexia, {
+    anorex<span class="fl">.1</span> &lt;-<span class="st"> </span><span class="kw">glm</span>(Postwt ~<span class="st"> </span>Prewt +<span class="st"> </span>Treat +<span class="st"> </span><span class="kw">offset</span>(Prewt), <span class="dt">family =</span> gaussian)
+    <span class="kw">summary</span>(anorex<span class="fl">.1</span>)
+})</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(Theoph, <span class="kw">summary</span>(conc))</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    2.88    5.28    4.96    7.14   11.40</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># same as</span>
+<span class="kw">summary</span>(Theoph$conc)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00    2.88    5.28    4.96    7.14   11.40</code></pre>
+<p><code>within</code> - allows us access inside a data structure to do things <em>within</em> it</p>
+<pre class="sourceCode r"><code class="sourceCode r">id_time &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">expand.grid</span>(<span class="dt">ID =</span> <span class="dv">1</span>:<span class="dv">3</span>, <span class="dt">TIME =</span> <span class="dv">0</span>:<span class="dv">10</span>))
+<span class="kw">head</span>(id_time)</code></pre>
+<pre><code>##   ID TIME
+## 1  1    0
+## 2  2    0
+## 3  3    0
+## 4  1    1
+## 5  2    1
+## 6  3    1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">id_time &lt;-<span class="st"> </span>id_time[<span class="kw">order</span>(id_time$ID, id_time$TIME), ]
+<span class="kw">head</span>(id_time)</code></pre>
+<pre><code>##    ID TIME
+## 1   1    0
+## 4   1    1
+## 7   1    2
+## 10  1    3
+## 13  1    4
+## 16  1    5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">within</span>(id_time, {
+    DV &lt;-<span class="st"> </span><span class="dv">0</span>
+    AMT &lt;-<span class="st"> </span><span class="dv">0</span>
+    DOSE &lt;-<span class="st"> </span><span class="dv">150</span>
+    MDV &lt;-<span class="st"> </span><span class="dv">0</span>
+})
+<span class="kw">head</span>(df)</code></pre>
+<pre><code>##    ID TIME MDV DOSE AMT DV
+## 1   1    0   0  150   0  0
+## 4   1    1   0  150   0  0
+## 7   1    2   0  150   0  0
+## 10  1    3   0  150   0  0
+## 13  1    4   0  150   0  0
+## 16  1    5   0  150   0  0</code></pre>
+<p>ie will have column order MDV, DOSE, AMT, DV add by column from bottom up going outward</p>
+<p>**notice the structure of a <code>within</code> call, there are no <code>,</code>s inside the brackets when creating multiple columns</p>
+<p>Let’s try to create a simulation data frame</p>
+<pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ID =</span> <span class="dv">1</span>:<span class="dv">5</span>)
+df &lt;-<span class="st"> </span><span class="kw">within</span>(df, {
+    UCTX &lt;-<span class="st"> </span><span class="dv">0</span>
+    <span class="co"># initialize amount to NA so will be read in as blank to phoenix</span>
+    AMT &lt;-<span class="st"> </span><span class="ot">NA</span>
+    <span class="co"># initialize doses</span>
+    DOSE &lt;-<span class="st"> </span><span class="kw">numeric</span>()
+    ADDL &lt;-<span class="st"> </span><span class="ot">NA</span>
+    II &lt;-<span class="st"> </span><span class="ot">NA</span>
+})
+<span class="kw">str</span>(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    5 obs. of  6 variables:
+##  $ ID  : int  1 2 3 4 5
+##  $ II  : logi  NA NA NA NA NA
+##  $ ADDL: logi  NA NA NA NA NA
+##  $ DOSE: num  NA NA NA NA NA
+##  $ AMT : logi  NA NA NA NA NA
+##  $ UCTX: num  0 0 0 0 0</code></pre>
+<p>Check out the differences between AMT/ADDL/II columns and DOSE</p>
+<p><code>within</code> can also be used for logical subsetting in a concisely written format:</p>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph$MDV &lt;-<span class="st"> </span><span class="dv">1</span>
+Theoph &lt;-<span class="st"> </span><span class="kw">within</span>(Theoph, MDV[Subject ==<span class="st"> </span><span class="dv">2</span> &amp;<span class="st"> </span>conc ==<span class="st"> </span><span class="dv">0</span>] &lt;-<span class="st"> </span><span class="dv">0</span>)</code></pre>
+<h2 id="assignments">Assignments</h2>
+<ul>
+<li>using <code>expand.grid</code> and <code>order</code> create an <code>id_time</code> dataset (dataframe)</li>
+<li>within the dataset add another column <code>Measurement</code> that is a set of noise generated with <code>rnorm</code> or <code>runif</code></li>
+<li>use <code>with</code> to subset Theoph for ID’s 1 and 2 only</li>
+<li>generate a new conc column for Theoph</li>
+</ul>
+<h2 id="merging-data">Merging Data</h2>
+<p>Let’s create some sample data to merge</p>
+<p>TOCHANGE: modify sample merge data off metrum-esque</p>
+<pre class="sourceCode r"><code class="sourceCode r">dose &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> <span class="kw">rep</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">each =</span> <span class="dv">2</span>), <span class="dt">time =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), 
+    <span class="dv">3</span>), <span class="dt">amount =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">40</span>, <span class="dv">60</span>, <span class="dv">80</span>), <span class="dt">each =</span> <span class="dv">2</span>))
+
+pk &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> <span class="kw">rep</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">each =</span> <span class="dv">4</span>), <span class="dt">time =</span> <span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">4</span>, <span class="dv">3</span>), 
+    <span class="dt">conc =</span> <span class="kw">signif</span>(<span class="kw">rnorm</span>(<span class="dv">12</span>), <span class="dv">2</span>) +<span class="st"> </span><span class="dv">2</span>)
+
+demo &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> letters[<span class="dv">1</span>:<span class="dv">4</span>], <span class="dt">race =</span> <span class="kw">c</span>(<span class="st">&quot;asian&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;black&quot;</span>, 
+    <span class="st">&quot;other&quot;</span>), <span class="dt">sex =</span> <span class="kw">c</span>(<span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>), <span class="dt">weight =</span> <span class="kw">c</span>(<span class="dv">75</span>, <span class="dv">70</span>, 
+    <span class="dv">73</span>, <span class="dv">68</span>))</code></pre>
+<p>You can merge two data frames with the <code>merge</code> command. Merge looks for <strong>keys</strong> to match up which rows and columns can be matched. <code>merge</code> can only combine two data frames at once, so in order to merge more than that, nested <code>merge</code> calls must be used</p>
+<p>What is the order of merging here?</p>
+<pre><code>merge(merge(x, y), z)</code></pre>
+<p>Let’s look at some of the merge options</p>
+<p><code>?merge</code></p>
+<p>Can do more advanced merges - lets merge everything but not include demographic data from subject 3</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">merge</span>(<span class="kw">merge</span>(dose, pk, <span class="dt">all =</span> <span class="ot">TRUE</span>), demo[-<span class="dv">3</span>, ], <span class="dt">all.x =</span> <span class="ot">TRUE</span>)</code></pre>
+<pre><code>##    subject time amount  conc  race    sex weight
+## 1        a    1     40 1.720 asian female     75
+## 2        a    2     NA 3.700 asian female     75
+## 3        a    3     40 4.000 asian female     75
+## 4        a    4     NA 2.370 asian female     75
+## 5        b    1     60 3.500 white   male     70
+## 6        b    2     NA 2.055 white   male     70
+## 7        b    3     60 1.170 white   male     70
+## 8        b    4     NA 2.022 white   male     70
+## 9        c    1     80 3.100  &lt;NA&gt;   &lt;NA&gt;     NA
+## 10       c    2     NA 3.000  &lt;NA&gt;   &lt;NA&gt;     NA
+## 11       c    3     80 2.740  &lt;NA&gt;   &lt;NA&gt;     NA
+## 12       c    4     NA 1.800  &lt;NA&gt;   &lt;NA&gt;     NA</code></pre>
+</body>
+</html>

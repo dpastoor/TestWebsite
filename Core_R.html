@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#core-r">Core R</a><ul>
+<li><a href="#brief-r-history">Brief R History</a></li>
+<li><a href="#data-structures">Data Structures</a></li>
+<li><a href="#vectors">Vectors</a></li>
+<li><a href="#coercion">Coercion</a></li>
+<li><a href="#attributes">Attributes</a></li>
+<li><a href="#lists">Lists</a></li>
+<li><a href="#data-frames">Data Frames</a></li>
+<li><a href="#creation-vs-coercion">Creation vs Coercion</a></li>
+<li><a href="#combining-data-structuresobjects">Combining Data Structures/Objects</a></li>
+<li><a href="#one-last-combining-catch">One last combining catch</a></li>
+</ul></li>
+<li><a href="#factors">Factors</a></li>
+</ul>
+</div>
+<h1 id="core-r">Core R</h1>
+<p>The objectives of this section is to take a number of concepts that you use frequently but may have not questioned the ‘why’ that R behaves that way.</p>
+<p>The overarching theme in this documentation is to “concisely” present the concept in a way to help you to think “in terms of R” rather than trying to memorize patterns. This will be supplemented by examples to help reinforce the concepts and help you on your journey to become an R-ninja.</p>
+<p>To set the stage, a brief history of R can put into context many of the decisions to how R behaves.</p>
+<h2 id="brief-r-history">Brief R History</h2>
+<p>TODO: brief history R</p>
+<h2 id="data-structures">Data Structures</h2>
+<p>R has a number of ways of storing information. The quick way to visualize the possibilities is as such:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Homogeneous</th>
+<th align="left">Heterogeneous</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1d</td>
+<td align="left">Atomic vector</td>
+<td align="left">List</td>
+</tr>
+<tr class="even">
+<td align="left">2d</td>
+<td align="left">Matrix</td>
+<td align="left">Data frame</td>
+</tr>
+<tr class="odd">
+<td align="left">nd</td>
+<td align="left">Array</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Homogeneous</strong> - all elements must be of the same type (mode) <strong>Heterogeneous</strong> - elements can be of different type (mode)</p>
+<p>A <strong>Type/Mode</strong> indicates how R stores the information in memory * numeric * double * integer * logical * character * list of pointers * function</p>
+<p>TODO: table of examples (ie page 96 R cookbook)</p>
+<p>The term <strong>Mode</strong> and <strong>Type</strong> are virtually interchangeable - from here out we will use the term <strong>Type</strong> as it is more commonly discussed. (‘mode’ was inherited mostly from S/S-plus nomenclature/definition)</p>
+<h2 id="vectors">Vectors</h2>
+<p>Data structures in R can be boiled down to a Vector. The most basic vector is an atomic vector.</p>
+<p>Vectors have 4 key components: * <em>contents</em> - the information * <em>type</em> - what type of information it stores * <em>length</em> - how long it is * <em>attributes</em> - additional meta data</p>
+<p>These components can be easily accessed as such:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># example vector</span>
+numeric_vector &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+
+<span class="co"># access contents by calling the vector by name</span>
+numeric_vector</code></pre>
+<pre><code>## [1] 1 2 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># see vector type</span>
+<span class="kw">typeof</span>(numeric_vector)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># check length</span>
+<span class="kw">length</span>(numeric_vector)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># see additional attributes</span>
+<span class="kw">attributes</span>(numeric_vector)</code></pre>
+<pre><code>## NULL</code></pre>
+<p>There are two useful functions for handling vectors: <code>is.*</code> and <code>as.*</code></p>
+<ul>
+<li><code>is.*</code> is a testing function that returns TRUE or FALSE</li>
+<li><code>as.*</code> is a coercion function - it attempts to convert the input to the requested data structure</li>
+</ul>
+<pre class="sourceCode r"><code class="sourceCode r">numeric_vector &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
+<span class="kw">typeof</span>(numeric_vector)</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.numeric</span>(numeric_vector)  <span class="co"># note is.numeric will return TRUE for both doubles and integers</span></code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.list</span>(numeric_vector)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+<span class="co"># coerce to list</span>
+numeric_vector &lt;-<span class="st"> </span><span class="kw">as.list</span>(numeric_vector)
+<span class="kw">typeof</span>(numeric_vector)</code></pre>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<p><em>tidbit</em> - <code>is.null</code> determines whether an Object is empty (has no content). <code>NULL</code> is often used to represent objects of zero length and is returned by expressions and functions whose value is undefined.</p>
+<h2 id="coercion">Coercion</h2>
+<p>TODO: expand section on coercion</p>
+<p>For homogeneous vectors, if you attempt to combine elements of different types, it will pick the class of the first element and coerce all others to that type</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="st">&quot;hello&quot;</span>, <span class="dv">1</span>, <span class="ot">FALSE</span>)</code></pre>
+<pre><code>## [1] &quot;hello&quot; &quot;1&quot;     &quot;FALSE&quot;</code></pre>
+<p>Note: If a logical vector is coerced into a numeric TRUE becomes 1 and FALSE becomes 0 - this can be used to ‘count’ the number of TRUE/FALSES easily using sum()</p>
+<ul>
+<li>vectors can be indexed by position: v[1] refers to the first element of the vector</li>
+<li>vectors can be indexed by multiple positions using c() - v[c(1,2)] will return a sub-vector the first and second element of ‘v’</li>
+</ul>
+<h2 id="attributes">Attributes</h2>
+<p>Attributes are additional metadata about an object. The most common 3 attributes are: * <code>names()</code> - character vector of element names * <code>dim()</code> - the structure of the object * <code>class()</code> - used to implement an object system (described later)</p>
+<p>You can give a vector names in three ways:</p>
+<ul>
+<li>During creation: <code>x &lt;- c(a = 1, b = 2, c = 3)</code></li>
+<li>By modifying a vector in place: <code>x &lt;- 1:3; names(x) &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code></li>
+<li>By creating a modified vector: <code>x &lt;- setNames(1:3, c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))</code></li>
+</ul>
+<p><code>dim()</code> passes additional structural information to the vector. Higher level data structures are simply atomic vectors with the addition of the dim() attribute.</p>
+<p>This is an important characteristic to remember as it can help conceptualize the implications of what will happen if you are trying to coerce a data structure into a different type.</p>
+<p>As vectors are coerced into higher order structures (eg. matrices and arrays) R handles this by default in a column-wise manner.</p>
+<pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">6</span>)
+a</code></pre>
+<pre><code>##      [,1]
+## [1,]    1
+## [2,]    2
+## [3,]    3
+## [4,]    4
+## [5,]    5
+## [6,]    6</code></pre>
+<p>An element in a matrix can be indexed exactly like an atomic vector</p>
+<pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">6</span>)
+a[<span class="dv">2</span>]</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">a[<span class="dv">4</span>]</code></pre>
+<pre><code>## [1] 4</code></pre>
+<p>In addition, R can refer to the dimensionality via:</p>
+<p><strong>DS[row, column]</strong></p>
+<pre class="sourceCode r"><code class="sourceCode r">a &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">6</span>)
+<span class="co"># give first row</span>
+a[<span class="dv">1</span>, ]</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># give first column</span>
+a[, <span class="dv">1</span>]</code></pre>
+<pre><code>## [1] 1 2 3 4 5 6</code></pre>
+<p>Beyond the 3 common attributes, additional attributes can be assigned; however it is important to note that when a vector is modified most attributes beyond the 3 listed above are lost</p>
+<pre class="sourceCode r"><code class="sourceCode r">conc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">9.62</span>, <span class="fl">3.1</span>, <span class="dv">2</span>, <span class="fl">0.3</span>)
+<span class="kw">attr</span>(conc, <span class="st">&quot;units&quot;</span>) &lt;-<span class="st"> &quot;ug/mL&quot;</span>
+conc</code></pre>
+<pre><code>## [1] 9.62 3.10 2.00 0.30
+## attr(,&quot;units&quot;)
+## [1] &quot;ug/mL&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attributes</span>(conc)</code></pre>
+<pre><code>## $units
+## [1] &quot;ug/mL&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">conc &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(conc)
+conc</code></pre>
+<pre><code>##   conc
+## 1 9.62
+## 2 3.10
+## 3 2.00
+## 4 0.30</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">attributes</span>(conc)</code></pre>
+<pre><code>## $names
+## [1] &quot;conc&quot;
+## 
+## $row.names
+## [1] 1 2 3 4
+## 
+## $class
+## [1] &quot;data.frame&quot;</code></pre>
+<h2 id="lists">Lists</h2>
+<p>Lists offer the ability to combine objects of different types. They also separate themselves from atomic vectors as they have the capability of <strong>recursion</strong> - Lists can contain nested lists.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">list</span>(<span class="kw">list</span>(<span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">list</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;there&quot;</span>), <span class="ot">TRUE</span>)</code></pre>
+<pre><code>## [[1]]
+## [[1]][[1]]
+## [1] 1 2 3
+## 
+## 
+## [[2]]
+## [[2]][[1]]
+## [1] &quot;hello&quot;
+## 
+## [[2]][[2]]
+## [1] &quot;there&quot;
+## 
+## 
+## [[3]]
+## [1] TRUE</code></pre>
+<p>To combine multiple lists into one large list, c() will coerce all lists to vectors and vectors to individual elements then combine them.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">list</span>(<span class="kw">list</span>(<span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">list</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;there&quot;</span>), <span class="ot">TRUE</span>, <span class="dv">1</span>:<span class="dv">3</span>))</code></pre>
+<pre><code>## List of 4
+##  $ :List of 1
+##   ..$ : int [1:3] 1 2 3
+##  $ :List of 2
+##   ..$ : chr &quot;hello&quot;
+##   ..$ : chr &quot;there&quot;
+##  $ : logi TRUE
+##  $ : int [1:3] 1 2 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">c</span>(<span class="kw">list</span>(<span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">list</span>(<span class="st">&quot;hello&quot;</span>, <span class="st">&quot;there&quot;</span>), <span class="ot">TRUE</span>, <span class="dv">1</span>:<span class="dv">3</span>))</code></pre>
+<pre><code>## List of 7
+##  $ : int [1:3] 1 2 3
+##  $ : chr &quot;hello&quot;
+##  $ : chr &quot;there&quot;
+##  $ : logi TRUE
+##  $ : int 1
+##  $ : int 2
+##  $ : int 3</code></pre>
+<p>Note: As shown in the examples, the structure of an object can be shown with <code>str</code></p>
+<h2 id="data-frames">Data Frames</h2>
+<p>The most commonly used method for storing data is the data frame. At its core, a data frame is a list of equal-length vectors. You can think of it as having the same properties as both a matrix and a list. (This means you can use the properties of both for things like indexing and subsetting)</p>
+<p>A couple useful commands for dataframe attributes: - <code>names()</code> - <code>colnames()</code> - <code>rownames()</code> - <code>length()</code> - <code>nrow()</code> - <code>ncol()</code></p>
+<p>You can easily see how the properties of both 1-dimensional structures (list) and 2-dimensional structures (matrix) come into play.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># can initialize with named vectors</span>
+df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">time =</span> <span class="dv">1</span>:<span class="dv">6</span>, <span class="dt">conc =</span> <span class="kw">c</span>(<span class="fl">9.1</span>, <span class="fl">8.5</span>, <span class="fl">7.3</span>, <span class="fl">4.2</span>, <span class="fl">3.8</span>, <span class="fl">2.5</span>), <span class="dt">race =</span> <span class="st">&quot;male&quot;</span>)
+## list-like length
+<span class="kw">length</span>(df)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># subset for individual element by index or name like a vector</span>
+df[<span class="dv">1</span>]</code></pre>
+<pre><code>##   time
+## 1    1
+## 2    2
+## 3    3
+## 4    4
+## 5    5
+## 6    6</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">df[<span class="st">&quot;time&quot;</span>]</code></pre>
+<pre><code>##   time
+## 1    1
+## 2    2
+## 3    3
+## 4    4
+## 5    5
+## 6    6</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+## array-like subset by dimension (remember - ds[row, column])
+df[<span class="dv">1</span>, ]</code></pre>
+<pre><code>##   time conc race
+## 1    1  9.1 male</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df)</code></pre>
+<pre><code>## [1] &quot;time&quot; &quot;conc&quot; &quot;race&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">nrow</span>(df)</code></pre>
+<pre><code>## [1] 6</code></pre>
+<h2 id="creation-vs-coercion">Creation vs Coercion</h2>
+<p>You can create new data structure with <code>datastructure()</code> - ie <code>data.frame()</code> As mentioned previously, you can coerce an object to a different data structure with <code>as.*</code> - ie: <code>as.data.frame()</code></p>
+<p>An additional note when coercing to data frames: * a vector will yield a one-column data frame * a list will yield one column for each element; it’s an error if they’re not all the same length * a matrix will yield a data frame with the same number of columns</p>
+<h2 id="combining-data-structuresobjects">Combining Data Structures/Objects</h2>
+<p>There are a number of ways to combine multiple objects. The simplest are <code>c()</code>, <code>cbind()</code>, and <code>rbind()</code></p>
+<pre class="sourceCode r"><code class="sourceCode r">time &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">6</span>
+conc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">9.1</span>, <span class="fl">8.5</span>, <span class="fl">7.3</span>, <span class="fl">4.2</span>, <span class="fl">3.8</span>, <span class="fl">2.5</span>)
+<span class="kw">c</span>(time, conc)</code></pre>
+<pre><code>##  [1] 1.0 2.0 3.0 4.0 5.0 6.0 9.1 8.5 7.3 4.2 3.8 2.5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(time, conc)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## time  1.0  2.0  3.0  4.0  5.0  6.0
+## conc  9.1  8.5  7.3  4.2  3.8  2.5</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cbind</span>(time, conc)</code></pre>
+<pre><code>##      time conc
+## [1,]    1  9.1
+## [2,]    2  8.5
+## [3,]    3  7.3
+## [4,]    4  4.2
+## [5,]    5  3.8
+## [6,]    6  2.5</code></pre>
+<p>While <code>cbind()</code> may seem like an easy option to quickly create df’s be careful of coercion:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">cbind</span>(time, conc))</code></pre>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<p>This is very important when dealing with coercion</p>
+<pre class="sourceCode r"><code class="sourceCode r">time &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">6</span>
+conc &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;9.1&quot;</span>, <span class="fl">8.5</span>, <span class="fl">7.3</span>, <span class="fl">4.2</span>, <span class="fl">3.8</span>, <span class="fl">2.5</span>)
+<span class="kw">cbind</span>(time, conc)</code></pre>
+<pre><code>##      time conc 
+## [1,] &quot;1&quot;  &quot;9.1&quot;
+## [2,] &quot;2&quot;  &quot;8.5&quot;
+## [3,] &quot;3&quot;  &quot;7.3&quot;
+## [4,] &quot;4&quot;  &quot;4.2&quot;
+## [5,] &quot;5&quot;  &quot;3.8&quot;
+## [6,] &quot;6&quot;  &quot;2.5&quot;</code></pre>
+<p>That seems easy to catch, but what about something like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(time, conc))</code></pre>
+<pre><code>##   time conc
+## 1    1  9.1
+## 2    2  8.5
+## 3    3  7.3
+## 4    4  4.2
+## 5    5  3.8
+## 6    6  2.5</code></pre>
+<p>It prints out to the console looking like numbers but…</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(time, conc)))</code></pre>
+<pre><code>## &#39;data.frame&#39;:    6 obs. of  2 variables:
+##  $ time: Factor w/ 6 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 2 3 4 5 6
+##  $ conc: Factor w/ 6 levels &quot;2.5&quot;,&quot;3.8&quot;,&quot;4.2&quot;,..: 6 5 4 3 2 1</code></pre>
+<p>They are actually coerced to a matrix of character factors</p>
+<p>This is because cbind will create a matrix unless one of the objects is already a data frame.</p>
+<p>The best way to avoid this is to be careful when deciding if you want to <em>coerce</em> (as.*) or initialize a new data frame.</p>
+<p>A good habit is to just to use data.frame() directly unless you have good reason for the coercion.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># coerce objects together into a data frame</span>
+<span class="kw">str</span>(<span class="kw">as.data.frame</span>(<span class="kw">cbind</span>(time, conc)))</code></pre>
+<pre><code>## &#39;data.frame&#39;:    6 obs. of  2 variables:
+##  $ time: Factor w/ 6 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 2 3 4 5 6
+##  $ conc: Factor w/ 6 levels &quot;2.5&quot;,&quot;3.8&quot;,&quot;4.2&quot;,..: 6 5 4 3 2 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># instead create new data frame</span>
+<span class="kw">str</span>(<span class="kw">data.frame</span>(time, conc))</code></pre>
+<pre><code>## &#39;data.frame&#39;:    6 obs. of  2 variables:
+##  $ time: int  1 2 3 4 5 6
+##  $ conc: Factor w/ 6 levels &quot;2.5&quot;,&quot;3.8&quot;,&quot;4.2&quot;,..: 6 5 4 3 2 1</code></pre>
+<p>Likewise, the safest way to use cbind() is to ensure all objects are of the same type.</p>
+<h2 id="one-last-combining-catch">One last combining catch</h2>
+<p>That is, what happens if vectors being combined to are of <em>unequal length</em>?</p>
+<p>R handles this through something called a <em>Recycling Rule</em>.</p>
+<p>When R performs operations, it does so element-by-element. When combining multiple vecotrs it does so in pairs. When R reaches the end of the shorter vector it starts over from the first element and keeps filling to the length of the longer vector.</p>
+<p>This can be convenient when you want to add a new column with a single value:</p>
+<pre class="sourceCode r"><code class="sourceCode r">id &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">6</span>
+race &lt;-<span class="st"> &quot;caucasian&quot;</span>
+<span class="kw">data.frame</span>(id, race)</code></pre>
+<pre><code>##   id      race
+## 1  1 caucasian
+## 2  2 caucasian
+## 3  3 caucasian
+## 4  4 caucasian
+## 5  5 caucasian
+## 6  6 caucasian</code></pre>
+<p>But can be dangerous and lead to unintended behavior:</p>
+<pre class="sourceCode r"><code class="sourceCode r">id &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">6</span>
+race &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;caucasian&quot;</span>, <span class="st">&quot;black&quot;</span>)
+<span class="kw">data.frame</span>(id, race)</code></pre>
+<pre><code>##   id      race
+## 1  1 caucasian
+## 2  2     black
+## 3  3 caucasian
+## 4  4     black
+## 5  5 caucasian
+## 6  6     black</code></pre>
+<h1 id="factors">Factors</h1>
+<p>Factors in R are a tricky beast and I haven’t spent as much time as I’d like writing up this section so I will give the cliff notes.</p>
+<p>TODO: expand factors section significantly</p>
+<ul>
+<li>unordered factors cannot be sorted</li>
+<li>to convert a numeric factor back to a numeric use the command <code>as.numeric(as.character(factor))</code></li>
+<li>factors have a couple key arguments when dealing with them <code>levels</code> - are the values the factor takes <code>labels</code> - are an optional value of labels that can be used to name the factors</li>
+</ul>
+<p>This will be hopefully a good example for us to examine.</p>
+<p>TOCHANGE: change to example with converting numerical pain scores to labelled factors</p>
+<pre class="sourceCode r"><code class="sourceCode r">Theoph3 &lt;-<span class="st"> </span>Theoph[<span class="kw">with</span>(Theoph, <span class="kw">as.numeric</span>(<span class="kw">as.character</span>(Subject)) &lt;<span class="st"> </span><span class="dv">4</span>),]
+<span class="kw">within</span>(Theoph3, {id &lt;-<span class="st"> </span><span class="kw">factor</span>(Subject, 
+                                <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), 
+                                <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;John&quot;</span>, <span class="st">&quot;Mary&quot;</span>, <span class="st">&quot;Joe&quot;</span>)
+                                )
+                subnum &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(Subject)
+                subcharnum &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">as.character</span>(Subject))
+                id2 &lt;-<span class="st"> </span><span class="kw">factor</span>(subnum, 
+                                <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), 
+                                <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;John&quot;</span>, <span class="st">&quot;Mary&quot;</span>, <span class="st">&quot;Joe&quot;</span>)
+                                )
+                id3 &lt;-<span class="st"> </span><span class="kw">factor</span>(subnum, 
+                                <span class="dt">levels =</span> <span class="kw">c</span>(<span class="dv">11</span>, <span class="dv">6</span>, <span class="dv">5</span>), 
+                                <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;John&quot;</span>, <span class="st">&quot;Mary&quot;</span>, <span class="st">&quot;Joe&quot;</span>)
+                                )
+              
+            }
+
+)</code></pre>
+<pre><code>##    Subject   Wt Dose  Time  conc  id3  id2 subcharnum subnum   id
+## 1        1 79.6 4.02  0.00  0.74 John &lt;NA&gt;          1     11 John
+## 2        1 79.6 4.02  0.25  2.84 John &lt;NA&gt;          1     11 John
+## 3        1 79.6 4.02  0.57  6.57 John &lt;NA&gt;          1     11 John
+## 4        1 79.6 4.02  1.12 10.50 John &lt;NA&gt;          1     11 John
+## 5        1 79.6 4.02  2.02  9.66 John &lt;NA&gt;          1     11 John
+## 6        1 79.6 4.02  3.82  8.58 John &lt;NA&gt;          1     11 John
+## 7        1 79.6 4.02  5.10  8.36 John &lt;NA&gt;          1     11 John
+## 8        1 79.6 4.02  7.03  7.47 John &lt;NA&gt;          1     11 John
+## 9        1 79.6 4.02  9.05  6.89 John &lt;NA&gt;          1     11 John
+## 10       1 79.6 4.02 12.12  5.94 John &lt;NA&gt;          1     11 John
+## 11       1 79.6 4.02 24.37  3.28 John &lt;NA&gt;          1     11 John
+## 12       2 72.4 4.40  0.00  0.00 Mary &lt;NA&gt;          2      6 Mary
+## 13       2 72.4 4.40  0.27  1.72 Mary &lt;NA&gt;          2      6 Mary
+## 14       2 72.4 4.40  0.52  7.91 Mary &lt;NA&gt;          2      6 Mary
+## 15       2 72.4 4.40  1.00  8.31 Mary &lt;NA&gt;          2      6 Mary
+## 16       2 72.4 4.40  1.92  8.33 Mary &lt;NA&gt;          2      6 Mary
+## 17       2 72.4 4.40  3.50  6.85 Mary &lt;NA&gt;          2      6 Mary
+## 18       2 72.4 4.40  5.02  6.08 Mary &lt;NA&gt;          2      6 Mary
+## 19       2 72.4 4.40  7.03  5.40 Mary &lt;NA&gt;          2      6 Mary
+## 20       2 72.4 4.40  9.00  4.55 Mary &lt;NA&gt;          2      6 Mary
+## 21       2 72.4 4.40 12.00  3.01 Mary &lt;NA&gt;          2      6 Mary
+## 22       2 72.4 4.40 24.30  0.90 Mary &lt;NA&gt;          2      6 Mary
+## 23       3 70.5 4.53  0.00  0.00  Joe &lt;NA&gt;          3      5  Joe
+## 24       3 70.5 4.53  0.27  4.40  Joe &lt;NA&gt;          3      5  Joe
+## 25       3 70.5 4.53  0.58  6.90  Joe &lt;NA&gt;          3      5  Joe
+## 26       3 70.5 4.53  1.02  8.20  Joe &lt;NA&gt;          3      5  Joe
+## 27       3 70.5 4.53  2.02  7.80  Joe &lt;NA&gt;          3      5  Joe
+## 28       3 70.5 4.53  3.62  7.50  Joe &lt;NA&gt;          3      5  Joe
+## 29       3 70.5 4.53  5.08  6.20  Joe &lt;NA&gt;          3      5  Joe
+## 30       3 70.5 4.53  7.07  5.30  Joe &lt;NA&gt;          3      5  Joe
+## 31       3 70.5 4.53  9.00  4.90  Joe &lt;NA&gt;          3      5  Joe
+## 32       3 70.5 4.53 12.15  3.70  Joe &lt;NA&gt;          3      5  Joe
+## 33       3 70.5 4.53 24.17  1.05  Joe &lt;NA&gt;          3      5  Joe</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">## generate data
+x =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">sample</span>(letters[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))
+
+<span class="kw">print</span>(<span class="kw">levels</span>(x))  ## This will show the levels of x are &#39;Levels: a b c d e&#39;</code></pre>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">
+## To reorder the levels: note, if x is not a factor use levels(factor(x))
+x =<span class="st"> </span><span class="kw">factor</span>(x, <span class="kw">levels</span>(x)[<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">1</span>:<span class="dv">3</span>)])
+
+<span class="kw">print</span>(<span class="kw">levels</span>(x))  ## Now &#39;Levels: d e a b c&#39;</code></pre>
+<pre><code>## [1] &quot;d&quot; &quot;e&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<p>TODO: expand to include more about coercion, give more examples</p>
+</body>
+</html>

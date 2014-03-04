@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#apply-functions">Apply Functions</a><ul>
+<li><a href="#apply">apply</a></li>
+<li><a href="#lapply">lapply</a></li>
+<li><a href="#sapply">sapply</a></li>
+<li><a href="#vapply">vapply</a></li>
+<li><a href="#tapply">tapply</a></li>
+<li><a href="#reapply">reapply</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="apply-functions">Apply Functions</h1>
+<p>TODO: flesh out and add more concrete PMTRX examples</p>
+<p>There are a number of <code>apply</code> commands in the R family. Each has different way of handling data</p>
+<p>Additional information can be found in threads on <a href="http://stackoverflow.com/questions/3505701/r-grouping-functions-sapply-vs-lapply-vs-apply-vs-tapply-vs-by-vs-aggrega">stackoverflow</a></p>
+<p>Note - the apply-style commands are <em>not</em> particularly faster than a <em>well-written</em> loop. The benefit is their one-line nature. <a href="http://stackoverflow.com/questions/2275896/is-rs-apply-family-more-than-syntactic-sugar?rq=1">Read some more here</a></p>
+<p>Here is a brief overview:</p>
+<p>TODO: test tag here</p>
+<h2 id="apply">apply</h2>
+<p>Used to evaluate a function over the margins of a matrix/array. It can apply a function by dimension (row/col).</p>
+<p><code>apply</code> takes the following arguments: * <code>X</code> - input * <code>MARGIN</code> - to distinguish by row or column. <code>1</code> - row, <code>2</code> - column * <code>FUN</code> - function to be applied * <code>...</code> is for other arguments to be passed into fun</p>
+<p>For example to apply the function <code>range</code> across all columns in <code>Theoph</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">apply</span>(Theoph, <span class="dv">2</span>, range)</code></pre>
+<pre><code>##      Subject Wt     Dose   Time    conc    MDV
+## [1,] &quot;1&quot;     &quot;54.6&quot; &quot;3.10&quot; &quot; 0.00&quot; &quot; 0.00&quot; &quot;0&quot;
+## [2,] &quot;9&quot;     &quot;86.4&quot; &quot;5.86&quot; &quot;24.65&quot; &quot;11.40&quot; &quot;1&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">apply</span>(Theoph, <span class="dv">2</span>, range))</code></pre>
+<pre><code>##  chr [1:2, 1:6] &quot;1&quot; &quot;9&quot; &quot;54.6&quot; &quot;86.4&quot; &quot;3.10&quot; &quot;5.86&quot; ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:6] &quot;Subject&quot; &quot;Wt&quot; &quot;Dose&quot; &quot;Time&quot; ...</code></pre>
+<p>Notice: - the ‘range’ function does not have ‘()’ around it. - The results are all characters - since <code>apply</code> goes over by dimension and needs a matrix/array, the whole data structure is coerced to the highest level. Since Subject is an ordered factor for <code>Theoph</code> the whole data-frame is coerced to a matrix of type <code>char</code> before the function is applied!</p>
+<p><em>tidbit</em> - apply is a good opportunity to use colMeans/colSums and rowMeans/rowSums - they are significantly faster, especially for large data structures.</p>
+<h2 id="lapply">lapply</h2>
+<p>Works to apply a function to each element in the list and <em>returns a list back</em></p>
+<p><code>lapply</code> takes the following arguments: * <code>X</code> - input * <code>FUN</code> - function to be applied * <code>...</code> is for other arguments to be passed into fun</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(Theoph, range)</code></pre>
+<pre><code>## $Subject
+## [1] 6 5
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5
+## 
+## $Wt
+## [1] 54.6 86.4
+## 
+## $Dose
+## [1] 3.10 5.86
+## 
+## $Time
+## [1]  0.00 24.65
+## 
+## $conc
+## [1]  0.0 11.4
+## 
+## $MDV
+## [1] 0 1</code></pre>
+<p>Given that a dataframe is a list with dimensions - lapply can easily step throuh the columns and apply your function and returns a list.</p>
+<h2 id="sapply">sapply</h2>
+<p>sapply is similar to lapply, the biggest difference is it attempts to simplify the result.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(Theoph, range)</code></pre>
+<pre><code>## $Subject
+## [1] 6 5
+## Levels: 6 &lt; 7 &lt; 8 &lt; 11 &lt; 3 &lt; 2 &lt; 4 &lt; 9 &lt; 12 &lt; 10 &lt; 1 &lt; 5
+## 
+## $Wt
+## [1] 54.6 86.4
+## 
+## $Dose
+## [1] 3.10 5.86
+## 
+## $Time
+## [1]  0.00 24.65
+## 
+## $conc
+## [1]  0.0 11.4
+## 
+## $MDV
+## [1] 0 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(Theoph, range)</code></pre>
+<pre><code>##      Subject   Wt Dose  Time conc MDV
+## [1,]       1 54.6 3.10  0.00  0.0   0
+## [2,]      12 86.4 5.86 24.65 11.4   1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">lapply</span>(Theoph, range))</code></pre>
+<pre><code>## List of 6
+##  $ Subject: Ord.factor w/ 12 levels &quot;6&quot;&lt;&quot;7&quot;&lt;&quot;8&quot;&lt;&quot;11&quot;&lt;..: 1 12
+##  $ Wt     : num [1:2] 54.6 86.4
+##  $ Dose   : num [1:2] 3.1 5.86
+##  $ Time   : num [1:2] 0 24.6
+##  $ conc   : num [1:2] 0 11.4
+##  $ MDV    : num [1:2] 0 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">sapply</span>(Theoph, range))</code></pre>
+<pre><code>##  num [1:2, 1:6] 1 12 54.6 86.4 3.1 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : NULL
+##   ..$ : chr [1:6] &quot;Subject&quot; &quot;Wt&quot; &quot;Dose&quot; &quot;Time&quot; ...</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">lapply</span>(Theoph, range))</code></pre>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(<span class="kw">sapply</span>(Theoph, range))</code></pre>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(<span class="kw">lapply</span>(Theoph, range))</code></pre>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">typeof</span>(<span class="kw">sapply</span>(Theoph, range))</code></pre>
+<pre><code>## [1] &quot;double&quot;</code></pre>
+<p>Generally, the “rules” for <code>sapply</code> can be thought-of as: * Result is a list where every element is length 1 - returns a vector * Result list where every elemtn is same length - returns a matrix * Neither of above - returns list</p>
+<h2 id="vapply">vapply</h2>
+<p>preferred over sapply due to minor speed improvement and better consistency with return types. Can read more about it on <a href="http://stackoverflow.com/questions/12339650/why-is-vapply-safer-than-sapply">stack overflow here</a></p>
+<h2 id="tapply">tapply</h2>
+<p>Used to apply functions to subsets of a vector. I will briefly give some detail, though my person preference is to use <code>plyr</code> commands or <code>split</code> when I’m dealing with subsets.</p>
+<p><code>tapply</code> takes the following arguments: * <code>X</code> - input * <code>INDEX</code> is a factor or list of factors * <code>FUN</code> - function to be applied * <code>...</code> is for other arguments to be passed into fun * <code>simplify</code> - logical for whether to simplify result or not</p>
+<p><strong>note</strong>: INDEX must be a factor or list of factors - if not any value passed in will be coerced to factor.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">with</span>(Theoph, <span class="kw">tapply</span>(conc, Subject, mean))</code></pre>
+<pre><code>##     6     7     8    11     3     2     4     9    12    10     1     5 
+## 3.525 3.911 4.272 4.511 5.086 4.824 4.940 4.894 5.410 5.931 6.439 5.783</code></pre>
+<p>Without using with:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tapply</span>(Theoph$conc, Theoph$Subject, mean)</code></pre>
+<pre><code>##     6     7     8    11     3     2     4     9    12    10     1     5 
+## 3.525 3.911 4.272 4.511 5.086 4.824 4.940 4.894 5.410 5.931 6.439 5.783</code></pre>
+<p>If speed is of the essence - <code>tapply</code> does perform well - for some minor benchmarks it proved to be ~ 7x faster than plyr - though take that with a grain of salt as it was the difference between 0.19 and 1.3 seconds. Hadley Wickham is also coming out with his new <code>dplyr</code> package that should increase the speed of <code>plyr</code>-style commands substantially.</p>
+<h2 id="reapply">reapply</h2>
+<p>metrumrg function - similar to <code>tapply</code> but adds some additional functionality, including a <code>where</code> option to restrict calculations in domain of <code>x</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(metrumrg)
+<span class="kw">with</span>(Theoph, <span class="kw">reapply</span>(conc, Subject, mean, <span class="dt">where =</span> Time !=<span class="st"> </span><span class="dv">0</span>, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</code></pre>
+<pre><code>##   [1] 7.009 7.009 7.009 7.009 7.009 7.009 7.009 7.009 7.009 7.009 7.009
+##  [12] 5.306 5.306 5.306 5.306 5.306 5.306 5.306 5.306 5.306 5.306 5.306
+##  [23] 5.595 5.595 5.595 5.595 5.595 5.595 5.595 5.595 5.595 5.595 5.595
+##  [34] 5.434 5.434 5.434 5.434 5.434 5.434 5.434 5.434 5.434 5.434 5.434
+##  [45] 6.361 6.361 6.361 6.361 6.361 6.361 6.361 6.361 6.361 6.361 6.361
+##  [56] 3.878 3.878 3.878 3.878 3.878 3.878 3.878 3.878 3.878 3.878 3.878
+##  [67] 4.287 4.287 4.287 4.287 4.287 4.287 4.287 4.287 4.287 4.287 4.287
+##  [78] 4.699 4.699 4.699 4.699 4.699 4.699 4.699 4.699 4.699 4.699 4.699
+##  [89] 5.383 5.383 5.383 5.383 5.383 5.383 5.383 5.383 5.383 5.383 5.383
+## [100] 6.500 6.500 6.500 6.500 6.500 6.500 6.500 6.500 6.500 6.500 6.500
+## [111] 4.962 4.962 4.962 4.962 4.962 4.962 4.962 4.962 4.962 4.962 4.962
+## [122] 5.951 5.951 5.951 5.951 5.951 5.951 5.951 5.951 5.951 5.951 5.951</code></pre>
+</body>
+</html>

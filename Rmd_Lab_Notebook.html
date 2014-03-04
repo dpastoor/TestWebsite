@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#rmd-lab-notebook">Rmd Lab Notebook</a><ul>
+<li><a href="#good-practices">Good Practices</a></li>
+<li><a href="#extracting-r-code">Extracting R Code</a></li>
+<li><a href="#chunk-labels">Chunk Labels</a></li>
+<li><a href="#global-options">Global Options</a></li>
+<li><a href="#digits-of-output">Digits of Output</a></li>
+<li><a href="#showinghiding-output-options">Showing/Hiding Output Options</a></li>
+<li><a href="#figures">Figures</a></li>
+<li><a href="#caching">Caching</a></li>
+<li><a href="#cross-referencing">Cross-Referencing</a></li>
+<li><a href="#adding-tables">Adding Tables</a></li>
+</ul></li>
+<li><a href="#rmd-lab-notebook-1">Rmd Lab Notebook</a><ul>
+<li><a href="#good-practices-1">Good Practices</a></li>
+<li><a href="#extracting-r-code-1">Extracting R Code</a></li>
+<li><a href="#chunk-labels-1">Chunk Labels</a></li>
+<li><a href="#global-options-1">Global Options</a></li>
+<li><a href="#digits-of-output-1">Digits of Output</a></li>
+<li><a href="#showinghiding-output-options-1">Showing/Hiding Output Options</a></li>
+<li><a href="#figures-1">Figures</a></li>
+<li><a href="#caching-1">Caching</a></li>
+<li><a href="#cross-referencing-1">Cross-Referencing</a></li>
+<li><a href="#adding-tables-1">Adding Tables</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="rmd-lab-notebook">Rmd Lab Notebook</h1>
+<p>This documentation will eventually grow to a more complete resource of some “better” practices and examples for how to design and maintain an Rmd lab notebook.</p>
+<h2 id="good-practices">Good Practices</h2>
+<ul>
+<li>Compile documents in a clean R session <code>rm(list = ls())</code></li>
+<li>attach <code>sessionInfo()</code> at the bottom of every document!</li>
+<li>If you have multiple files or additional complexities using a Makefile may be easier long term</li>
+<li>use chunk labels if possible</li>
+<li><h2>Some ‘gotchas’ for knitting</h2></li>
+<li>when knitted, each chunk is evaluated based on a working directory of the current file location of the Rmd document. * This directory is reset after each chunk! So no setting in a higher level chunk and forgetting</li>
+</ul>
+<h2 id="extracting-r-code">Extracting R Code</h2>
+<p>To <em>tangle</em> (extract program code), the function <code>purl()</code> will compile all R-code to a single .R file.</p>
+<pre><code>library(knitr)
+purl(&quot;your-file.Rmd&quot;)
+# results in your-file.R</code></pre>
+<h2 id="chunk-labels">Chunk Labels</h2>
+<p>Think of chunk labels as unique id’s in a document. While they are used mainly for geration of external files, naming allows you to reference them elsewhere in your document. Automatically generated figures are also based on chunk-label names.</p>
+<h2 id="global-options">Global Options</h2>
+<p>global options can be modified at any point in your document and will affect all chunks below.</p>
+<p>The syntax is <code>opts_chunk$set(&lt;options-you-want,...&gt;)</code></p>
+<h2 id="digits-of-output">Digits of Output</h2>
+<ul>
+<li>Control with <code>options(scipen = &lt;#&gt;, digits = &lt;#&gt;)</code> * <code>scipen</code> - controls when reported as scientific notation * digits = # digits to report</li>
+</ul>
+<h2 id="showinghiding-output-options">Showing/Hiding Output Options</h2>
+<ul>
+<li><code>echo</code></li>
+<li><code>results</code>
+<ul>
+<li><code>asis</code></li>
+<li><code>hide</code></li>
+</ul></li>
+<li><code>warning/error/message</code></li>
+<li><code>split</code></li>
+<li><code>include</code></li>
+</ul>
+<h2 id="figures">Figures</h2>
+<ul>
+<li>Alignment - <code>fig.align = default=center/left/right</code></li>
+<li>Path - <code>fig.path</code></li>
+</ul>
+<h2 id="caching">Caching</h2>
+<ul>
+<li><code>cache = TRUE</code></li>
+</ul>
+<p>Do have some nice granular control options however * update if version changes <code>version = R.version.string</code> * check to see if input file changes <code>&lt;file&gt;_name=file.info('&lt;file&gt;.csv')$mtime</code> and re-read data if newer * check if other chunk updates <code>dependson='&lt;chunk-name&gt;'</code> * can also take integer chunk names <code>dependson = -1</code> would set dependency for chunk above</p>
+<h2 id="cross-referencing">Cross-Referencing</h2>
+<p>```</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">18</span>), )</code></pre>
+<p>```</p>
+<p>Then in later chunk</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(conc, Time, <span class="dt">data =</span> Theoph, <span class="dt">color =</span> Subject) +<span class="st"> </span><span class="er">&lt;&lt;</span>my-theme&gt;<span class="er">&gt;</span></code></pre>
+<p>TODO: flesh out and add additional material from knitr book</p>
+<h2 id="adding-tables">Adding Tables</h2>
+<p>Knitr has a built in function <code>kable</code> that allows for easy creation of tables.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+<span class="kw">kable</span>(<span class="kw">head</span>(Theoph))</code></pre>
+<pre><code>## |Subject  |    Wt|  Dose|  Time|   conc|
+## |:--------|-----:|-----:|-----:|------:|
+## |1        |  79.6|  4.02|  0.00|   0.74|
+## |1        |  79.6|  4.02|  0.25|   2.84|
+## |1        |  79.6|  4.02|  0.57|   6.57|
+## |1        |  79.6|  4.02|  1.12|  10.50|
+## |1        |  79.6|  4.02|  2.02|   9.66|
+## |1        |  79.6|  4.02|  3.82|   8.58|</code></pre>
+<p>It is worth checking out the documentation for kable via <code>?kable</code></p>
+<p>By default, the output is a markdown table, which makes printing to the console or evaluating the knitted markdown easy. <code>kable</code> also allows direct output into latex, html, pandoc, and rst via the <code>format</code> argument</p>
+<p>One other highly useful argument is <code>digits</code>, which passes all values in numeric columns through the <code>round()</code> function before printing them out. This prevents analysis results to print all calculated digits.</p>
+<pre class="sourceCode r"><code class="sourceCode r">AUC_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ID =</span> <span class="dv">1</span>:<span class="dv">5</span>, <span class="dt">AUC =</span> <span class="kw">runif</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">100</span>))
+<span class="kw">kable</span>(AUC_df)</code></pre>
+<pre><code>## |  ID|    AUC|
+## |---:|------:|
+## |   1|  95.97|
+## |   2|  58.86|
+## |   3|  56.72|
+## |   4|  66.62|
+## |   5|  76.94|</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(AUC_df, , <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<pre><code>## |  ID|    AUC|
+## |---:|------:|
+## |   1|  95.97|
+## |   2|  58.86|
+## |   3|  56.72|
+## |   4|  66.62|
+## |   5|  76.93|</code></pre>
+<p>QUESTION: can digits be specified for certain columns only?</p>
+<p>TODO: controlling table style via css</p>
+<p>TODO: add xtable/pander options</p>
+<h1 id="rmd-lab-notebook-1">Rmd Lab Notebook</h1>
+<p>This documentation will eventually grow to a more complete resource of some “better” practices and examples for how to design and maintain an Rmd lab notebook.</p>
+<h2 id="good-practices-1">Good Practices</h2>
+<ul>
+<li>Compile documents in a clean R session <code>rm(list = ls())</code></li>
+<li>attach <code>sessionInfo()</code> at the bottom of every document!</li>
+<li>If you have multiple files or additional complexities using a Makefile may be easier long term</li>
+<li>use chunk labels if possible</li>
+<li><h2>Some ‘gotchas’ for knitting</h2></li>
+<li>when knitted, each chunk is evaluated based on a working directory of the current file location of the Rmd document. * This directory is reset after each chunk! So no setting in a higher level chunk and forgetting</li>
+</ul>
+<h2 id="extracting-r-code-1">Extracting R Code</h2>
+<p>To <em>tangle</em> (extract program code), the function <code>purl()</code> will compile all R-code to a single .R file.</p>
+<pre><code>library(knitr)
+purl(&quot;your-file.Rmd&quot;)
+# results in your-file.R</code></pre>
+<h2 id="chunk-labels-1">Chunk Labels</h2>
+<p>Think of chunk labels as unique id’s in a document. While they are used mainly for geration of external files, naming allows you to reference them elsewhere in your document. Automatically generated figures are also based on chunk-label names.</p>
+<h2 id="global-options-1">Global Options</h2>
+<p>global options can be modified at any point in your document and will affect all chunks below.</p>
+<p>The syntax is <code>opts_chunk$set(&lt;options-you-want,...&gt;)</code></p>
+<h2 id="digits-of-output-1">Digits of Output</h2>
+<ul>
+<li>Control with <code>options(scipen = &lt;#&gt;, digits = &lt;#&gt;)</code> * <code>scipen</code> - controls when reported as scientific notation * digits = # digits to report</li>
+</ul>
+<h2 id="showinghiding-output-options-1">Showing/Hiding Output Options</h2>
+<ul>
+<li><code>echo</code></li>
+<li><code>results</code>
+<ul>
+<li><code>asis</code></li>
+<li><code>hide</code></li>
+</ul></li>
+<li><code>warning/error/message</code></li>
+<li><code>split</code></li>
+<li><code>include</code></li>
+</ul>
+<h2 id="figures-1">Figures</h2>
+<ul>
+<li>Alignment - <code>fig.align = default=center/left/right</code></li>
+<li>Path - <code>fig.path</code></li>
+</ul>
+<h2 id="caching-1">Caching</h2>
+<ul>
+<li><code>cache = TRUE</code></li>
+</ul>
+<p>Do have some nice granular control options however * update if version changes <code>version = R.version.string</code> * check to see if input file changes <code>&lt;file&gt;_name=file.info('&lt;file&gt;.csv')$mtime</code> and re-read data if newer * check if other chunk updates <code>dependson='&lt;chunk-name&gt;'</code> * can also take integer chunk names <code>dependson = -1</code> would set dependency for chunk above</p>
+<h2 id="cross-referencing-1">Cross-Referencing</h2>
+<p>```</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">theme</span>(<span class="dt">axis.text.x =</span> <span class="kw">element_text</span>(<span class="dt">size =</span> <span class="dv">18</span>), )</code></pre>
+<p>```</p>
+<p>Then in later chunk</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">qplot</span>(conc, Time, <span class="dt">data =</span> Theoph, <span class="dt">color =</span> Subject) +<span class="st"> </span><span class="er">&lt;&lt;</span>my-theme&gt;<span class="er">&gt;</span></code></pre>
+<p>TODO: flesh out and add additional material from knitr book</p>
+<h2 id="adding-tables-1">Adding Tables</h2>
+<p>Knitr has a built in function <code>kable</code> that allows for easy creation of tables.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+<span class="kw">kable</span>(<span class="kw">head</span>(Theoph))</code></pre>
+<pre><code>## |Subject  |    Wt|  Dose|  Time|   conc|
+## |:--------|-----:|-----:|-----:|------:|
+## |1        |  79.6|  4.02|  0.00|   0.74|
+## |1        |  79.6|  4.02|  0.25|   2.84|
+## |1        |  79.6|  4.02|  0.57|   6.57|
+## |1        |  79.6|  4.02|  1.12|  10.50|
+## |1        |  79.6|  4.02|  2.02|   9.66|
+## |1        |  79.6|  4.02|  3.82|   8.58|</code></pre>
+<p>It is worth checking out the documentation for kable via <code>?kable</code></p>
+<p>By default, the output is a markdown table, which makes printing to the console or evaluating the knitted markdown easy. <code>kable</code> also allows direct output into latex, html, pandoc, and rst via the <code>format</code> argument</p>
+<p>One other highly useful argument is <code>digits</code>, which passes all values in numeric columns through the <code>round()</code> function before printing them out. This prevents analysis results to print all calculated digits.</p>
+<pre class="sourceCode r"><code class="sourceCode r">AUC_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">ID =</span> <span class="dv">1</span>:<span class="dv">5</span>, <span class="dt">AUC =</span> <span class="kw">runif</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">100</span>))
+<span class="kw">kable</span>(AUC_df)</code></pre>
+<pre><code>## |  ID|    AUC|
+## |---:|------:|
+## |   1|  95.97|
+## |   2|  58.86|
+## |   3|  56.72|
+## |   4|  66.62|
+## |   5|  76.94|</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">kable</span>(AUC_df, , <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
+<pre><code>## |  ID|    AUC|
+## |---:|------:|
+## |   1|  95.97|
+## |   2|  58.86|
+## |   3|  56.72|
+## |   4|  66.62|
+## |   5|  76.93|</code></pre>
+<p>QUESTION: can digits be specified for certain columns only?</p>
+<p>TODO: controlling table style via css</p>
+<p>TODO: add xtable/pander options</p>
+</body>
+</html>

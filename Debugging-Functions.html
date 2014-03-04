@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#debugging-functions">Debugging Functions</a><ul>
+<li><a href="#commands-while-debugging">Commands While Debugging</a></li>
+<li><a href="#debugging-example-time">debugging example time</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="debugging-functions">Debugging Functions</h1>
+<p>TODO: split to different headers (debugging/int-function-writing)</p>
+<p>There are 3 basic ways to indicate to an end-user that something isn’t right inside a function - be it due to an improper calculation or improper input.</p>
+<ul>
+<li><strong>message</strong>: relay a generic notification produced by <code>message()</code></li>
+<li><strong>warning</strong>: An indication that something is wrong but not enough to halt execution of the function. Generated with <code>warning()</code></li>
+<li><strong>error</strong> An indication that a fatal error has occurred - stops execution. Generated with <code>stop()</code> function</li>
+</ul>
+<p>Given a stoplight analogy - a message is like reading an alert sign over the light, a warning is a “yellow light” and error is a “red light”</p>
+<p>TODO: more about warning messages and testing input</p>
+<p>R has a couple useful built-in tools for debugging:</p>
+<ul>
+<li><code>traceback</code> - prints out stack of function calls after an error occurs</li>
+<li><code>debug</code> - flags function for “debug” mode to allow function execution to proceed one line at time</li>
+<li><code>browser</code> - suspends execution of function wherever it is called and puts function into debug mode</li>
+<li><code>trace</code> - allows insertion of debugging code into function at specific locations</li>
+<li><code>recover</code> - to modify error behavior to browse function call stack</li>
+</ul>
+<p>There is also the <code>message</code> and <code>print/cat</code> techniques - that are less elegant but work for basic situations</p>
+<p>TOCHANGE: change rmse example slightly to make it more ‘real’</p>
+<pre class="sourceCode r"><code class="sourceCode r">deviation &lt;-<span class="st"> </span>function(x) x -<span class="st"> </span><span class="kw">mean</span>(x)
+squared &lt;-<span class="st"> </span>function(x) x^<span class="dv">2</span>
+root &lt;-<span class="st"> </span>function(x) x^<span class="fl">0.5</span>
+values &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="st">&quot;NA&quot;</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)
+<span class="co"># would get an error issue with knitting if let error run</span>
+<span class="co"># root(mean(squared(deviation(values))))</span>
+
+<span class="kw">traceback</span>()</code></pre>
+<pre><code>## No traceback available</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># what is wrong with this example?  hint think of the type of variables</span>
+j &lt;-<span class="st"> </span>function(<span class="dt">i =</span> <span class="dv">5</span>) {
+    if (i ==<span class="st"> </span><span class="dv">1</span>) 
+        <span class="st">&quot;a&quot;</span> +<span class="st"> </span><span class="dv">1</span>
+    <span class="kw">j</span>(i -<span class="st"> </span><span class="dv">1</span>)
+}
+<span class="kw">j</span>()</code></pre>
+<h2 id="commands-while-debugging">Commands While Debugging</h2>
+<p>interactive debugging through <code>browser()</code> can be helpful to see what is going on inside your function.</p>
+<p>A couple of the important commands to know are:</p>
+<ul>
+<li><strong><RET></strong> Go to the next statement if the function is being debugged. Continue execution if the browser was invoked.</li>
+<li><strong>c or cont</strong> - Continue execution without single stepping.</li>
+<li><strong>n</strong> - Execute the next statement in the function. This works from the browser as well.</li>
+<li><strong>where</strong> - Show the call stack.</li>
+<li><strong>Q</strong> - Halt execution and jump to the top-level immediately.</li>
+</ul>
+<p><code>browser()</code> is helpful to use while building a function if you would like to check what is going on each time the function is called.</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_fun &lt;-<span class="st"> </span>function(x) {
+    <span class="co"># do some stuff ...</span>
+    <span class="kw">browser</span>()
+    ## do more stuff
+}</code></pre>
+<p>For the above example, when <code>my_fun</code> is run, the browser will be launched at the point where it is called in the function and you can check the current status of the function environment.</p>
+<p>TODO: add example use for browser inside function</p>
+<h2 id="debugging-example-time">debugging example time</h2>
+<p>TODO: snap-shot examples for future references</p>
+<p>while debugging a couple things you can use to navigate</p>
+<ul>
+<li><code>ls()</code> will list the contents in the environment
+<ul>
+<li>you can call these objects to see what their current value is</li>
+</ul></li>
+<li>can quit out of debugging with <code>Q</code></li>
+<li>proceed to next line in debug with ‘n’</li>
+<li>continue code execution <code>c</code> - similar to <code>n</code> but may allow for multiple lines of code to execute before stopping (will run all code inside loop or function before pausing) While in debug mode you can run code on objects in the environment as you would otherwise</li>
+</ul>
+<p>TOCHANGE: to modify as well from metrum-esque example</p>
+<pre class="sourceCode r"><code class="sourceCode r">deviation &lt;-<span class="st"> </span>function(x) {
+    if (!<span class="kw">is.numeric</span>(x)) 
+        <span class="kw">stop</span>(<span class="st">&quot;x must be numeric&quot;</span>) else if (<span class="kw">any</span>(<span class="kw">is.na</span>(x))) 
+        <span class="kw">warning</span>(<span class="st">&quot;removing NA values in x&quot;</span>) else <span class="kw">message</span>(<span class="st">&quot;calculating differences from the reference value</span><span class="ch">\n</span><span class="st">...&quot;</span>)
+    <span class="kw">return</span>(x -<span class="st"> </span><span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+}</code></pre>
+<p><code>invisible(x)</code> in place of <code>return</code></p>
+<p>Wouldn’t it be nice it we could have the results stored but not have them printed!</p>
+<pre class="sourceCode r"><code class="sourceCode r">sim_number &lt;-<span class="st"> </span>function(x) {
+    <span class="kw">cat</span>(<span class="st">&quot;You are running:&quot;</span>, x, <span class="st">&quot;simulations&quot;</span>)
+    x +<span class="st"> </span><span class="dv">5</span>  <span class="co">#imagine simulation function here instead</span>
+}</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">rep_maker &lt;-<span class="st"> </span>function(df, x) {
+    <span class="kw">cat</span>(<span class="st">&quot;You are creating:&quot;</span>, x, <span class="st">&quot;copies&quot;</span>)
+    outputvector &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">length</span>(df) *<span class="st"> </span>x)
+    <span class="kw">lapply</span>(<span class="dv">1</span>:x, function(x) {
+        <span class="co"># imagine simulation function here instead</span>
+    })
+}</code></pre>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#thinking-in-r">Thinking in R</a><ul>
+<li><a href="#thinking-in-r-1">Thinking in R</a><ul>
+<li><a href="#memory-allocation">Memory Allocation</a></li>
+<li><a href="#vectorization">Vectorization</a></li>
+<li><a href="#vectorization-tips">Vectorization Tips</a></li>
+</ul></li>
+<li><a href="#indexing">Indexing</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="thinking-in-r">Thinking in R</h1>
+<p>Thinking in R is very important as your R-tasks increase in complexity or magnitude. Keep in mind that the rest of the workshop will build and call on these concepts heavily. This will also be your first foray into examining your approach to a problem and ‘best practices’, as there will almost always be a number of ways of getting to the result you want. The goal is to keep you in the ‘better’ to ‘best’ range as often as possible.</p>
+<h2 id="thinking-in-r-1">Thinking in R</h2>
+<h3 id="memory-allocation">Memory Allocation</h3>
+<p>Before we jump into subsetting, we need to briefly touch upon how R treats data, and more importantly, how it <em>grows</em> it as you use it.</p>
+<p>Lets look at three possible methods of generating a sequence:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(microbenchmark)
+
+<span class="co"># c_grow</span>
+vec &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
+for(i in <span class="dv">1</span>:n) vec &lt;-<span class="st"> </span><span class="kw">c</span>(vec, i)
+
+<span class="co"># subscript</span>
+vec &lt;-<span class="st"> </span><span class="kw">numeric</span>(n)
+for(i in <span class="dv">1</span>:n) vec[i] &lt;-<span class="st"> </span>i
+
+<span class="co"># colon</span>
+vec &lt;-<span class="st"> </span><span class="dv">1</span>:n
+
+microbenchmark {
+<span class="co"># do test</span>
+<span class="co"># TODO: add microbenchmark test</span>
+}</code></pre>
+<p>Why is the colon operator so much faster?</p>
+<p>One reason is that ‘:’ is actually a function just like sum() or mean() or ggplot() - but it is written in <code>C</code> and written for <em>speed</em>.</p>
+<p>Second, When you grow an object incrementally, it can lead to an issue called <strong>fragmented memory</strong> - when R starts to store the new elements and runs out of the currently allocated space it has to hunt for new space. Do this over and over and it wastes a lot of time.</p>
+<p><strong>suburbanization example</strong>*</p>
+<p>One stark example is the use of rbind to continuously append to a dataframe.</p>
+<p>There are two ways to avoid this trap.</p>
+<ol style="list-style-type: decimal">
+<li>Build a list of the pieces and combine in one go (using do.call - will be covered later)</li>
+<li>preallocate the memory</li>
+</ol>
+<p><strong>Eliminating the growth or re-indexing of objects is an easy way of dramatically increasing the speed of R code.</strong></p>
+<h3 id="vectorization">Vectorization</h3>
+<p>I’m sure you’ve heard the concept that <code>for</code> loops in R are slow. Well slow compared to what?</p>
+<p>Let’s consider how we could add together a vector of numbers:</p>
+<pre><code>lsum &lt;- 0
+for (i in 1:length(x)) lsum &lt;- lsum + x[i]</code></pre>
+<p>or the easy R-way</p>
+<pre><code> sum(x) </code></pre>
+<p>It may seem like a silly example to you because <code>sum(x)</code> is so intuitive to the average user - but someone had to write the function at some point.</p>
+<p>Similar to the <code>:</code> example previously, these examples provide the same result but with dramatic differences in speed.</p>
+<p>The magic that gives these functions is they have been written in C. They are still loops - that is unavoidable, but they’ve been optimized for speed.</p>
+<p>The other benefit that is frequent by-product of vectorization is <em>legibility</em> - sum(x) is so easy to understand compared to that loop.</p>
+<p>Likewise, <code>conc &lt;- amt*volume</code> is both easier to read, and clearly expresses the relationship between variables, whether we are multiplying one amt and volume or a columns of amts and volumes.</p>
+<h3 id="vectorization-tips">Vectorization Tips</h3>
+<ul>
+<li>Put as much outside of loops as possible. Ex: If you have a sequence you are applying over and over, create the sequence first and reuse it inside the loop.</li>
+<li>Make the number of iterations as small as possible.</li>
+<li>Don’t feel the need to over-vectorize</li>
+</ul>
+<p>We will come back to more ‘optimization’-type issues later, but for now keep these principles in the back of your head as we go forward.</p>
+<h2 id="indexing">Indexing</h2>
+<p>As has been applied in previous examples, R has to have a way of referring to where in your object certain pieces of information are stored. Given that everything in R can be thought of as a vector, indexing allows us to easily query the position in which the vector an element is stored.</p>
+<p>For example, to examine the 10th element of an atomic vector one simply can do <code>v[10]</code></p>
+<p>For more complex structures keep in mind this concept of an <em>index</em> for when you’re thinking how to obtain or subset your data.</p>
+</body>
+</html>

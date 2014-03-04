@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#reproducible-research">Reproducible Research</a><ul>
+<li><a href="#importance-of-reproducible-research">Importance of Reproducible Research</a></li>
+<li><a href="#best-practices-in-reproducible-research">“Best” Practices in Reproducible Research</a></li>
+<li><a href="#reproducible-research-tools">Reproducible Research Tools</a></li>
+<li><a href="#in-line-code">In-line code</a></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="reproducible-research">Reproducible Research</h1>
+<p>This section covers the conceptual framework behind reproducible research.</p>
+<p>For software-specific implementations, tips, and tricks, please refer to the following sections:</p>
+<ul>
+<li>RMD_Lab_Notebook</li>
+<li>LYX Reports</li>
+<li>Slidify Presentations</li>
+</ul>
+<p>TODO: add components for: Rmarkdown, knitr, git/github/bitbucket</p>
+<h2 id="importance-of-reproducible-research">Importance of Reproducible Research</h2>
+<h2 id="best-practices-in-reproducible-research">“Best” Practices in Reproducible Research</h2>
+<p>Minimal set of guidelines that should be followed to reduce the likelihood of other people being unable to reproduce your results given your document and data.</p>
+<ol style="list-style-type: decimal">
+<li>Avoid absolute paths</li>
+<li>If necessary to set absolute path or read in datasets from other locations, do so in a single, clear location. Minimize the need for people to hunt for locations they need to change paths/pointers.</li>
+<li>Keep each project in a single directory</li>
+<li>For any simulation or number generation <code>set.seed(&lt;number&gt;)</code> to maintain reproducibility</li>
+<li>Use R vanilla to avoid differences with <code>.Rdata</code> or <code>.Rprofile</code></li>
+<li>Include <code>sessionInfo()</code> with <code>cache = FALSE</code> so other people can check if difficulties are due to environment or version differences</li>
+<li>Before generating a final report, clear your environment (and <code>cache()</code> if the full analysis could be completed in a reasonable amount of time) before knitting to make sure the document compiles from scratch properly.</li>
+</ol>
+<h2 id="reproducible-research-tools">Reproducible Research Tools</h2>
+<h2 id="in-line-code">In-line code</h2>
+<p>One major goal of reproducible research is a final report should not include numbers derived from the data. Instead, numbers should be printed as part of the code evaluation.</p>
+<p>For example, I would not write: In the Theophylline dataset there are 12 unique subjects. Instead, I can use in-line code evaluation to write:</p>
+<pre class="sourceCode r"><code class="sourceCode r">There are <span class="st">`</span><span class="dt">r length(unique(Theoph$Subject))</span><span class="st">`</span> individuals in the dataset</code></pre>
+<p>Which evaluates to:</p>
+<p>There are 12 individuals in the dataset</p>
+<p>This can be extended to handle output from models, summary statistics, etc.</p>
+<p>TODO: add model fit example</p>
+<p>Karl Broman also provides a nice <a href="http://kbroman.github.io/knitr_knutshell/">knitr in a nutshell tutorial</a></p>
+</body>
+</html>
