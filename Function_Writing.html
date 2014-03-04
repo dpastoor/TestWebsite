@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#function-writing">Function Writing</a><ul>
 <li><a href="#default-behaviors">Default Behaviors</a></li>
@@ -124,7 +124,6 @@ d &lt;-<span class="st"> </span><span class="kw">quote</span>(<span class="kw">c
     <span class="kw">print</span>(x)
     <span class="kw">summary</span>(...)
 }
-
 <span class="kw">f</span>(<span class="st">&quot;It worked! The summary is:&quot;</span>, <span class="kw">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">100</span>), <span class="dt">digits =</span> <span class="dv">2</span>)</code></pre>
 <pre><code>## [1] &quot;It worked! The summary is:&quot;</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -148,7 +147,6 @@ d &lt;-<span class="st"> </span><span class="kw">quote</span>(<span class="kw">c
         <span class="kw">return</span>(<span class="st">&quot;negative&quot;</span>)
     <span class="kw">return</span>(<span class="st">&quot;Don&#39;t know - is it zero?&quot;</span>)
 }
-
 <span class="kw">num_sign</span>(<span class="dv">1</span>)</code></pre>
 <pre><code>## [1] &quot;positive&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">num_sign</span>(-<span class="dv">1</span>)</code></pre>
@@ -167,7 +165,6 @@ num_sign2 &lt;-<span class="st"> </span>function(x) {
         <span class="st">&quot;negative&quot;</span>
     <span class="st">&quot;Don&#39;t know - is it zero?&quot;</span>
 }
-
 <span class="kw">num_sign2</span>(<span class="dv">1</span>)</code></pre>
 <pre><code>## [1] &quot;Don&#39;t know - is it zero?&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">num_sign2</span>(-<span class="dv">1</span>)</code></pre>
@@ -186,14 +183,12 @@ num_sign2 &lt;-<span class="st"> </span>function(x) {
     time &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">1</span>)
     time
 }
-
 PK_info2 &lt;-<span class="st"> </span>function() {
     id &lt;-<span class="st"> </span><span class="dv">1</span>:<span class="dv">10</span>
     doses &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>)
     time &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">1</span>)
     <span class="kw">list</span>(<span class="dt">id =</span> id, <span class="dt">doses =</span> doses, <span class="dt">time =</span> time)
 }
-
 <span class="kw">PK_info</span>()</code></pre>
 <pre><code>##  [1]  0  1  2  3  4  5  6  7  8  9 10</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PK_info2</span>()</code></pre>
@@ -263,7 +258,6 @@ df5$conc[df4$CONC == &#39;LLOQ &lt; 10&#39;] &lt;- NA</code></pre>
     x[x[[<span class="st">&quot;CONC&quot;</span>]] ==<span class="st"> &quot;LLOQ &lt; 10&quot;</span>] &lt;-<span class="st"> </span><span class="ot">NA</span>
     x
 }
-
 <span class="kw">BQL_NA</span>(df1)
 <span class="kw">BQL_NA</span>(df2)
 <span class="kw">BQL_NA</span>(df3)

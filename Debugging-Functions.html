@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#debugging-functions">Debugging Functions</a><ul>
 <li><a href="#commands-while-debugging">Commands While Debugging</a></li>
@@ -62,7 +62,6 @@ root &lt;-<span class="st"> </span>function(x) x^<span class="fl">0.5</span>
 values &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="st">&quot;NA&quot;</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)
 <span class="co"># would get an error issue with knitting if let error run</span>
 <span class="co"># root(mean(squared(deviation(values))))</span>
-
 <span class="kw">traceback</span>()</code></pre>
 <pre><code>## No traceback available</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># what is wrong with this example?  hint think of the type of variables</span>

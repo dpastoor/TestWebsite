@@ -55,4 +55,20 @@ for(i in seq_along(html_files)){
   write(get_TOC(html_files[[i]]), file="test.html", append = TRUE)
 }
 
+## replace ToC w/ css floating implementation in each subpage
+rep_TOC <- function (filename) 
+{
+  filename <- filename
+  listfile <- scan(filename, sep = "\n", what = character(), 
+                   quiet = TRUE)
+  listfile <- gsub("<div id=\"TOC\">", "<div class=\"toc\">", listfile)
+  return(listfile)
+}
+for(i in seq_along(html_files)){
+  output <- rep_TOC(html_files[[i]])
+write(output, file=html_files[[i]])
+}
+
+
+
 

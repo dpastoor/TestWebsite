@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#introduction-to-data-manipulation">Introduction to Data Manipulation</a><ul>
 <li><a href="#subsetting">Subsetting</a></li>
@@ -501,10 +501,8 @@ Theoph &lt;-<span class="st"> </span><span class="kw">within</span>(Theoph, MDV[
 <p>TOCHANGE: modify sample merge data off metrum-esque</p>
 <pre class="sourceCode r"><code class="sourceCode r">dose &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> <span class="kw">rep</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">each =</span> <span class="dv">2</span>), <span class="dt">time =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), 
     <span class="dv">3</span>), <span class="dt">amount =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">40</span>, <span class="dv">60</span>, <span class="dv">80</span>), <span class="dt">each =</span> <span class="dv">2</span>))
-
 pk &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> <span class="kw">rep</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">each =</span> <span class="dv">4</span>), <span class="dt">time =</span> <span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">4</span>, <span class="dv">3</span>), 
     <span class="dt">conc =</span> <span class="kw">signif</span>(<span class="kw">rnorm</span>(<span class="dv">12</span>), <span class="dv">2</span>) +<span class="st"> </span><span class="dv">2</span>)
-
 demo &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">subject =</span> letters[<span class="dv">1</span>:<span class="dv">4</span>], <span class="dt">race =</span> <span class="kw">c</span>(<span class="st">&quot;asian&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;black&quot;</span>, 
     <span class="st">&quot;other&quot;</span>), <span class="dt">sex =</span> <span class="kw">c</span>(<span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>, <span class="st">&quot;male&quot;</span>), <span class="dt">weight =</span> <span class="kw">c</span>(<span class="dv">75</span>, <span class="dv">70</span>, 
     <span class="dv">73</span>, <span class="dv">68</span>))</code></pre>

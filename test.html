@@ -1,151 +1,125 @@
-<h2> Reproducible Research </h2>
-<div id="TOC">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="custom.css" type="text/css" />
+</head>
+<body>
+<div class="toc">
 <ul>
-<li><a href="Reproducible_Research.html#reproducible-research">Reproducible Research</a><ul>
-<li><a href="Reproducible_Research.html#importance-of-reproducible-research">Importance of Reproducible Research</a></li>
-<li><a href="Reproducible_Research.html#best-practices-in-reproducible-research">“Best” Practices in Reproducible Research</a></li>
-<li><a href="Reproducible_Research.html#reproducible-research-tools">Reproducible Research Tools</a></li>
-<li><a href="Reproducible_Research.html#in-line-code">In-line code</a></li>
+<li><a href="#debugging-functions">Debugging Functions</a><ul>
+<li><a href="#commands-while-debugging">Commands While Debugging</a></li>
+<li><a href="#debugging-example-time">debugging example time</a></li>
 </ul></li>
 </ul>
 </div>
-<h2> Rmd Lab Notebook </h2>
-<div id="TOC">
+<h1 id="debugging-functions">Debugging Functions</h1>
+<p>TODO: split to different headers (debugging/int-function-writing)</p>
+<p>There are 3 basic ways to indicate to an end-user that something isn’t right inside a function - be it due to an improper calculation or improper input.</p>
 <ul>
-<li><a href="Rmd_Lab_Notebook.html#rmd-lab-notebook">Rmd Lab Notebook</a><ul>
-<li><a href="Rmd_Lab_Notebook.html#good-practices">Good Practices</a></li>
-<li><a href="Rmd_Lab_Notebook.html#extracting-r-code">Extracting R Code</a></li>
-<li><a href="Rmd_Lab_Notebook.html#chunk-labels">Chunk Labels</a></li>
-<li><a href="Rmd_Lab_Notebook.html#global-options">Global Options</a></li>
-<li><a href="Rmd_Lab_Notebook.html#digits-of-output">Digits of Output</a></li>
-<li><a href="Rmd_Lab_Notebook.html#showinghiding-output-options">Showing/Hiding Output Options</a></li>
-<li><a href="Rmd_Lab_Notebook.html#figures">Figures</a></li>
-<li><a href="Rmd_Lab_Notebook.html#caching">Caching</a></li>
-<li><a href="Rmd_Lab_Notebook.html#cross-referencing">Cross-Referencing</a></li>
-<li><a href="Rmd_Lab_Notebook.html#adding-tables">Adding Tables</a></li>
-</ul></li>
+<li><strong>message</strong>: relay a generic notification produced by <code>message()</code></li>
+<li><strong>warning</strong>: An indication that something is wrong but not enough to halt execution of the function. Generated with <code>warning()</code></li>
+<li><strong>error</strong> An indication that a fatal error has occurred - stops execution. Generated with <code>stop()</code> function</li>
 </ul>
-</div>
-<h2> Core R </h2>
-<div id="TOC">
+<p>Given a stoplight analogy - a message is like reading an alert sign over the light, a warning is a “yellow light” and error is a “red light”</p>
+<p>TODO: more about warning messages and testing input</p>
+<p>R has a couple useful built-in tools for debugging:</p>
 <ul>
-<li><a href="Core_R.html#core-r">Core R</a><ul>
-<li><a href="Core_R.html#brief-r-history">Brief R History</a></li>
-<li><a href="Core_R.html#data-structures">Data Structures</a></li>
-<li><a href="Core_R.html#vectors">Vectors</a></li>
-<li><a href="Core_R.html#coercion">Coercion</a></li>
-<li><a href="Core_R.html#attributes">Attributes</a></li>
-<li><a href="Core_R.html#lists">Lists</a></li>
-<li><a href="Core_R.html#data-frames">Data Frames</a></li>
-<li><a href="Core_R.html#creation-vs-coercion">Creation vs Coercion</a></li>
-<li><a href="Core_R.html#combining-data-structuresobjects">Combining Data Structures/Objects</a></li>
-<li><a href="Core_R.html#one-last-combining-catch">One last combining catch</a></li>
-</ul></li>
-<li><a href="Core_R.html#factors">Factors</a></li>
+<li><code>traceback</code> - prints out stack of function calls after an error occurs</li>
+<li><code>debug</code> - flags function for “debug” mode to allow function execution to proceed one line at time</li>
+<li><code>browser</code> - suspends execution of function wherever it is called and puts function into debug mode</li>
+<li><code>trace</code> - allows insertion of debugging code into function at specific locations</li>
+<li><code>recover</code> - to modify error behavior to browse function call stack</li>
 </ul>
-</div>
-<h2> Thinking in R </h2>
-<div id="TOC">
+<p>There is also the <code>message</code> and <code>print/cat</code> techniques - that are less elegant but work for basic situations</p>
+<p>TOCHANGE: change rmse example slightly to make it more ‘real’</p>
+<pre class="sourceCode r"><code class="sourceCode r">deviation &lt;-<span class="st"> </span>function(x) x -<span class="st"> </span><span class="kw">mean</span>(x)
+squared &lt;-<span class="st"> </span>function(x) x^<span class="dv">2</span>
+root &lt;-<span class="st"> </span>function(x) x^<span class="fl">0.5</span>
+values &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="st">&quot;NA&quot;</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)
+<span class="co"># would get an error issue with knitting if let error run</span>
+<span class="co"># root(mean(squared(deviation(values))))</span>
+<span class="kw">traceback</span>()</code></pre>
+<pre><code>## No traceback available</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># what is wrong with this example?  hint think of the type of variables</span>
+j &lt;-<span class="st"> </span>function(<span class="dt">i =</span> <span class="dv">5</span>) {
+    if (i ==<span class="st"> </span><span class="dv">1</span>) 
+        <span class="st">&quot;a&quot;</span> +<span class="st"> </span><span class="dv">1</span>
+    <span class="kw">j</span>(i -<span class="st"> </span><span class="dv">1</span>)
+}
+<span class="kw">j</span>()</code></pre>
+<h2 id="commands-while-debugging">Commands While Debugging</h2>
+<p>interactive debugging through <code>browser()</code> can be helpful to see what is going on inside your function.</p>
+<p>A couple of the important commands to know are:</p>
 <ul>
-<li><a href="Thinking-In-R.html#thinking-in-r">Thinking in R</a><ul>
-<li><a href="Thinking-In-R.html#thinking-in-r-1">Thinking in R</a><ul>
-<li><a href="Thinking-In-R.html#memory-allocation">Memory Allocation</a></li>
-<li><a href="Thinking-In-R.html#vectorization">Vectorization</a></li>
-<li><a href="Thinking-In-R.html#vectorization-tips">Vectorization Tips</a></li>
-</ul></li>
-<li><a href="Thinking-In-R.html#indexing">Indexing</a></li>
-</ul></li>
+<li><strong><RET></strong> Go to the next statement if the function is being debugged. Continue execution if the browser was invoked.</li>
+<li><strong>c or cont</strong> - Continue execution without single stepping.</li>
+<li><strong>n</strong> - Execute the next statement in the function. This works from the browser as well.</li>
+<li><strong>where</strong> - Show the call stack.</li>
+<li><strong>Q</strong> - Halt execution and jump to the top-level immediately.</li>
 </ul>
-</div>
-<h2> Introduction to Data Manipulation </h2>
-<div id="TOC">
+<p><code>browser()</code> is helpful to use while building a function if you would like to check what is going on each time the function is called.</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_fun &lt;-<span class="st"> </span>function(x) {
+    <span class="co"># do some stuff ...</span>
+    <span class="kw">browser</span>()
+    ## do more stuff
+}</code></pre>
+<p>For the above example, when <code>my_fun</code> is run, the browser will be launched at the point where it is called in the function and you can check the current status of the function environment.</p>
+<p>TODO: add example use for browser inside function</p>
+<h2 id="debugging-example-time">debugging example time</h2>
+<p>TODO: snap-shot examples for future references</p>
+<p>while debugging a couple things you can use to navigate</p>
 <ul>
-<li><a href="Intro_Data_Manipulation.html#introduction-to-data-manipulation">Introduction to Data Manipulation</a><ul>
-<li><a href="Intro_Data_Manipulation.html#subsetting">Subsetting</a></li>
-<li><a href="Intro_Data_Manipulation.html#lets-look-at-some-examples">LETS LOOK AT SOME EXAMPLES</a></li>
-<li><a href="Intro_Data_Manipulation.html#logical-subsetting">Logical Subsetting</a></li>
-<li><a href="Intro_Data_Manipulation.html#common-subsetting-situations-and-some-useful-functions">Common Subsetting Situations and Some Useful Functions</a></li>
-<li><a href="Intro_Data_Manipulation.html#some-subsetting-practice-problems">Some Subsetting Practice Problems</a></li>
-<li><a href="Intro_Data_Manipulation.html#data-manipulation">Data Manipulation</a><ul>
-<li><a href="Intro_Data_Manipulation.html#renaming-columns">renaming columns</a></li>
-<li><a href="Intro_Data_Manipulation.html#reordering-rowscolumns">reordering rows/columns</a></li>
-<li><a href="Intro_Data_Manipulation.html#keys">Keys</a></li>
-<li><a href="Intro_Data_Manipulation.html#ordering-and-expand.grid">Ordering and expand.grid()</a></li>
-<li><a href="Intro_Data_Manipulation.html#additional-manipulations">Additional manipulations</a></li>
-</ul></li>
-<li><a href="Intro_Data_Manipulation.html#assignments">Assignments</a></li>
-<li><a href="Intro_Data_Manipulation.html#merging-data">Merging Data</a></li>
-</ul></li>
-</ul>
-</div>
-<h2> Apply Functions </h2>
-<div id="TOC">
+<li><code>ls()</code> will list the contents in the environment
 <ul>
-<li><a href="Apply_Functions.html#apply-functions">Apply Functions</a><ul>
-<li><a href="Apply_Functions.html#apply">apply</a></li>
-<li><a href="Apply_Functions.html#lapply">lapply</a></li>
-<li><a href="Apply_Functions.html#sapply">sapply</a></li>
-<li><a href="Apply_Functions.html#vapply">vapply</a></li>
-<li><a href="Apply_Functions.html#tapply">tapply</a></li>
-<li><a href="Apply_Functions.html#reapply">reapply</a></li>
+<li>you can call these objects to see what their current value is</li>
 </ul></li>
+<li>can quit out of debugging with <code>Q</code></li>
+<li>proceed to next line in debug with ‘n’</li>
+<li>continue code execution <code>c</code> - similar to <code>n</code> but may allow for multiple lines of code to execute before stopping (will run all code inside loop or function before pausing) While in debug mode you can run code on objects in the environment as you would otherwise</li>
 </ul>
-</div>
-<h2> Function Writing </h2>
-<div id="TOC">
-<ul>
-<li><a href="Function_Writing.html#function-writing">Function Writing</a><ul>
-<li><a href="Function_Writing.html#default-behaviors">Default Behaviors</a></li>
-<li><a href="Function_Writing.html#argument-matching">Argument Matching</a></li>
-<li><a href="Function_Writing.html#lazy-evaluation">Lazy Evaluation</a></li>
-<li><a href="Function_Writing.html#passing-on-arguments">Passing on Arguments</a></li>
-<li><a href="Function_Writing.html#return-values">Return Values</a></li>
-<li><a href="Function_Writing.html#basic-function-creation-assignments">Basic Function Creation Assignments</a></li>
-</ul></li>
-<li><a href="Function_Writing.html#todo">TODO</a></li>
-<li><a href="Function_Writing.html#pause-to-go-read-the-environments-and-r-section">pause to go read the Environments and R section</a><ul>
-<li><a href="Function_Writing.html#types-of-functions">Types of Functions</a><ul>
-<li><a href="Function_Writing.html#anonymous-functions">Anonymous Functions</a></li>
-<li><a href="Function_Writing.html#closures">Closures</a></li>
-<li><a href="Function_Writing.html#lists-of-functions">Lists of Functions</a></li>
-</ul></li>
-<li><a href="Function_Writing.html#functional-programming">Functional Programming</a><ul>
-<li><a href="Function_Writing.html#assignment-2">Assignment</a></li>
-</ul></li>
-</ul></li>
-</ul>
-</div>
-<h2> Environments and Scoping Rules </h2>
-<div id="TOC">
-<ul>
-<li><a href="Environments-and-Scoping.html#environments-and-scoping-rules">Environments and Scoping Rules</a><ul>
-<li><a href="Environments-and-Scoping.html#what-is-scoping">What is Scoping</a></li>
-<li><a href="Environments-and-Scoping.html#scoping-rules">Scoping Rules</a><ul>
-<li><a href="Environments-and-Scoping.html#lexical-scoping">Lexical Scoping</a></li>
-</ul></li>
-<li><a href="Environments-and-Scoping.html#function-environments">Function Environments</a><ul>
-<li><a href="Environments-and-Scoping.html#where-function-exists">Where Function Exists</a></li>
-<li><a href="Environments-and-Scoping.html#environment-where-function-created">Environment Where Function Created</a></li>
-<li><a href="Environments-and-Scoping.html#environment-where-function-called">Environment Where Function Called</a></li>
-<li><a href="Environments-and-Scoping.html#environment-created-when-function-runs">Environment Created When Function Runs</a></li>
-<li><a href="Environments-and-Scoping.html#a-pharmacometrics-example">A Pharmacometrics Example</a></li>
-</ul></li>
-<li><a href="Environments-and-Scoping.html#modifiying-binding-dangerously">Modifiying Binding (dangerously!)</a></li>
-</ul></li>
-</ul>
-</div>
-<h2> Object Orientation </h2>
-<div id="TOC">
-<ul>
-<li><a href="Object_Orientation.html#object-orientation">Object Orientation</a></li>
-</ul>
-</div>
-<h2> Debugging Functions </h2>
-<div id="TOC">
-<ul>
-<li><a href="Debugging-Functions.html#debugging-functions">Debugging Functions</a><ul>
-<li><a href="Debugging-Functions.html#commands-while-debugging">Commands While Debugging</a></li>
-<li><a href="Debugging-Functions.html#debugging-example-time">debugging example time</a></li>
-</ul></li>
-</ul>
-</div>
+<p>TOCHANGE: to modify as well from metrum-esque example</p>
+<pre class="sourceCode r"><code class="sourceCode r">deviation &lt;-<span class="st"> </span>function(x) {
+    if (!<span class="kw">is.numeric</span>(x)) 
+        <span class="kw">stop</span>(<span class="st">&quot;x must be numeric&quot;</span>) else if (<span class="kw">any</span>(<span class="kw">is.na</span>(x))) 
+        <span class="kw">warning</span>(<span class="st">&quot;removing NA values in x&quot;</span>) else <span class="kw">message</span>(<span class="st">&quot;calculating differences from the reference value</span><span class="ch">\n</span><span class="st">...&quot;</span>)
+    <span class="kw">return</span>(x -<span class="st"> </span><span class="kw">mean</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+}</code></pre>
+<p><code>invisible(x)</code> in place of <code>return</code></p>
+<p>Wouldn’t it be nice it we could have the results stored but not have them printed!</p>
+<pre class="sourceCode r"><code class="sourceCode r">sim_number &lt;-<span class="st"> </span>function(x) {
+    <span class="kw">cat</span>(<span class="st">&quot;You are running:&quot;</span>, x, <span class="st">&quot;simulations&quot;</span>)
+    x +<span class="st"> </span><span class="dv">5</span>  <span class="co">#imagine simulation function here instead</span>
+}</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">rep_maker &lt;-<span class="st"> </span>function(df, x) {
+    <span class="kw">cat</span>(<span class="st">&quot;You are creating:&quot;</span>, x, <span class="st">&quot;copies&quot;</span>)
+    outputvector &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">length</span>(df) *<span class="st"> </span>x)
+    <span class="kw">lapply</span>(<span class="dv">1</span>:x, function(x) {
+        <span class="co"># imagine simulation function here instead</span>
+    })
+}</code></pre>
+</body>
+</html>

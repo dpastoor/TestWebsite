@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#core-r">Core R</a><ul>
 <li><a href="#brief-r-history">Brief R History</a></li>
@@ -89,7 +89,6 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>These components can be easily accessed as such:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># example vector</span>
 numeric_vector &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)
-
 <span class="co"># access contents by calling the vector by name</span>
 numeric_vector</code></pre>
 <pre><code>## [1] 1 2 3</code></pre>
@@ -384,7 +383,6 @@ race &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&q
                                 )
               
             }
-
 )</code></pre>
 <pre><code>##    Subject   Wt Dose  Time  conc  id3  id2 subcharnum subnum   id
 ## 1        1 79.6 4.02  0.00  0.74 John &lt;NA&gt;          1     11 John
@@ -422,13 +420,11 @@ race &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&q
 ## 33       3 70.5 4.53 24.17  1.05  Joe &lt;NA&gt;          3      5  Joe</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">## generate data
 x =<span class="st"> </span><span class="kw">factor</span>(<span class="kw">sample</span>(letters[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>))
-
 <span class="kw">print</span>(<span class="kw">levels</span>(x))  ## This will show the levels of x are &#39;Levels: a b c d e&#39;</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot; &quot;d&quot; &quot;e&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">
 ## To reorder the levels: note, if x is not a factor use levels(factor(x))
 x =<span class="st"> </span><span class="kw">factor</span>(x, <span class="kw">levels</span>(x)[<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">1</span>:<span class="dv">3</span>)])
-
 <span class="kw">print</span>(<span class="kw">levels</span>(x))  ## Now &#39;Levels: d e a b c&#39;</code></pre>
 <pre><code>## [1] &quot;d&quot; &quot;e&quot; &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
 <p>TODO: expand to include more about coercion, give more examples</p>

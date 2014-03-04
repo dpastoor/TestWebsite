@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#object-orientation">Object Orientation</a></li>
 </ul>
@@ -151,7 +151,6 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>As you may have noticed from looking at the summary methods, generic functions can be written to be tied to a specific class via <code>generic_function.class</code></p>
 <p>Let’s have a go at creating our own method <em>parametric</em> and write an associated summary function. We can use the <code>Theoph</code> dataset and the <code>conc</code> column for this demonstration.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(Theoph$conc) &lt;-<span class="st"> &#39;parametric&#39;</span>
-
 summary.parametric &lt;-<span class="st"> </span>function(x, ...) {
     <span class="kw">c</span>(
     <span class="dt">mean    =</span> <span class="kw">mean</span>(x),
@@ -161,7 +160,6 @@ summary.parametric &lt;-<span class="st"> </span>function(x, ...) {
     <span class="dt">high_CI =</span> <span class="kw">mean</span>(x) +<span class="st"> </span><span class="fl">1.96</span>*<span class="kw">sd</span>(x)
     )
 }
-
 <span class="kw">summary</span>(Theoph$conc)</code></pre>
 <pre><code>##    mean     var   stdev  low_CI high_CI 
 ##  4.9605  8.2215  2.8673 -0.6595 10.5804</code></pre>

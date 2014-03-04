@@ -28,7 +28,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
   <link rel="stylesheet" href="custom.css" type="text/css" />
 </head>
 <body>
-<div id="TOC">
+<div class="toc">
 <ul>
 <li><a href="#thinking-in-r">Thinking in R</a><ul>
 <li><a href="#thinking-in-r-1">Thinking in R</a><ul>
@@ -47,18 +47,14 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>Before we jump into subsetting, we need to briefly touch upon how R treats data, and more importantly, how it <em>grows</em> it as you use it.</p>
 <p>Lets look at three possible methods of generating a sequence:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(microbenchmark)
-
 <span class="co"># c_grow</span>
 vec &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">0</span>)
 for(i in <span class="dv">1</span>:n) vec &lt;-<span class="st"> </span><span class="kw">c</span>(vec, i)
-
 <span class="co"># subscript</span>
 vec &lt;-<span class="st"> </span><span class="kw">numeric</span>(n)
 for(i in <span class="dv">1</span>:n) vec[i] &lt;-<span class="st"> </span>i
-
 <span class="co"># colon</span>
 vec &lt;-<span class="st"> </span><span class="dv">1</span>:n
-
 microbenchmark {
 <span class="co"># do test</span>
 <span class="co"># TODO: add microbenchmark test</span>
